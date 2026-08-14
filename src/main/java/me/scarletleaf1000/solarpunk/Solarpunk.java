@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk;
 
 import com.mojang.logging.LogUtils;
+import me.scarletleaf1000.solarpunk.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -45,6 +46,8 @@ public class Solarpunk {
     public Solarpunk(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+
+        ModItems.register(modEventBus);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (Solarpunk) to respond directly to events.
