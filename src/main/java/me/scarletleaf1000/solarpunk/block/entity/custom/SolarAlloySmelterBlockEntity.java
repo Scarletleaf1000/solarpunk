@@ -1,87 +1,71 @@
 package me.scarletleaf1000.solarpunk.block.entity.custom;
 
 import me.scarletleaf1000.solarpunk.block.entity.ModBlockEntities;
+import me.scarletleaf1000.solarpunk.screen.custom.SolarAlloySmelterMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.*;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
-public class SolarAlloySmelterBlockEntity extends BlockEntity implements Container {
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuProvider {
+    public final ItemStackHandler inventory = new ItemStackHandler(4) {
+        @Override
+        protected void onContentsChanged(int slot) {
+           setChanged();
+           if(!level.isClientSide) {
+               level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+           }
+        }
+    };
 
     public  SolarAlloySmelterBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.SOLAR_ALLOY_SMELTER_BE.get(), pos, blockState);
     }
 
     @Override
-    public int getContainerSize() {
-        return inventory.size();
+    public Component getDisplayName() {
+        return Component.translatable("block.menu.solarpunk.solar_alloy_smelter");
     }
 
     @Override
-    public boolean isEmpty() {
-        for (int i = 0; i < getContainerSize(); i++) {
-            ItemStack item = getItem(i);
-            if (!item.isEmpty()) {
-                return false;
-            }
+    public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+        return new SolarAlloySmelterMenu(i, inventory, this);
+    }
+
+    public void drops() {
+        SimpleContainer inv = new SimpleContainer(inventory.getSlots());
+        for(int i = 0; i < inventory.getSlots(); i++) {
+            inv.setItem(i, inventory.getStackInSlot(i));
         }
-        return true;
+
+        Containers.dropContents(this.level, this.worldPosition, inv);
+    }
+
+    public void clearContents() {
+        for(int i = 0; i < inventory.getSlots(); i++) {
+            inventory.setStackInSlot(i, ItemStack.EMPTY);
+        }
     }
 
     @Override
-    public ItemStack getItem(int i) {
-        setChanged();
-        return inventory.get(i);
+    protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.saveAdditional(pTag, pRegistries);
+        pTag.put("inventory", inventory.serializeNBT(pRegistries));
     }
 
     @Override
-    public ItemStack removeItem(int i, int amount) {
-        setChanged();
-        ItemStack item = inventory.get(i);
-        item.shrink(amount);
-        return inventory.set(i, item);
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int i) {
-        setChanged();
-        return ContainerHelper.takeItem(inventory, i);
-    }
-
-    @Override
-    public void setItem(int i, ItemStack itemStack) {
-        setChanged();
-        inventory.set(i, itemStack);
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return Container.stillValidBlockEntity(this, player);
-    }
-
-    @Override
-    public void clearContent() {
-        inventory.clear();
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, inventory, registries);
-    }
-
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        ContainerHelper.loadAllItems(tag, inventory, registries);
+    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
+        super.loadAdditional(pTag, pRegistries);
+        inventory.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
     }
 }

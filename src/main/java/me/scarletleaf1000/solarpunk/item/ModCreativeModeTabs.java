@@ -39,22 +39,24 @@ public class ModCreativeModeTabs {
                     .icon(() -> new ItemStack(ModBlocks.HELIOLITE_BLOCK.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(Solarpunk.MOD_ID, "solarpunk_item_tab"))
                     //.withSearchBar()
-                    .displayItems((pParameters, pOutput) -> {
-                       pOutput.accept(ModBlocks.HELIOLITE_BLOCK);
-                       pOutput.accept(ModBlocks.BUDDING_HELIOLITE);
-                       pOutput.accept(ModBlocks.SMALL_HELIOLITE_BUD);
-                       pOutput.accept(ModBlocks.MEDIUM_HELIOLITE_BUD);
-                       pOutput.accept(ModBlocks.LARGE_HELIOLITE_BUD);
-                       pOutput.accept(ModBlocks.HELIOLITE_CLUSTER);
+                    .displayItems((parameters, output) -> {
+                       output.accept(ModBlocks.HELIOLITE_BLOCK);
+                       output.accept(ModBlocks.BUDDING_HELIOLITE);
+                       output.accept(ModBlocks.SMALL_HELIOLITE_BUD);
+                       output.accept(ModBlocks.MEDIUM_HELIOLITE_BUD);
+                       output.accept(ModBlocks.LARGE_HELIOLITE_BUD);
+                       output.accept(ModBlocks.HELIOLITE_CLUSTER);
 
-                       pOutput.accept(ModBlocks.CINDERITE_ORE);
-                       pOutput.accept(ModBlocks.DEEPSLATE_CINDERITE_ORE);
-                       pOutput.accept(ModBlocks.RAW_CINDERITE_BLOCK);
-                       pOutput.accept(ModBlocks.CINDERITE_BLOCK);
-                       pOutput.accept(ModBlocks.SILVER_ORE);
-                       pOutput.accept(ModBlocks.DEEPSLATE_SILVER_ORE);
-                       pOutput.accept(ModBlocks.RAW_SILVER_BLOCK);
-                       pOutput.accept(ModBlocks.SILVER_BLOCK);
+                       output.accept(ModBlocks.CINDERITE_ORE);
+                       output.accept(ModBlocks.DEEPSLATE_CINDERITE_ORE);
+                       output.accept(ModBlocks.RAW_CINDERITE_BLOCK);
+                       output.accept(ModBlocks.CINDERITE_BLOCK);
+                       output.accept(ModBlocks.SILVER_ORE);
+                       output.accept(ModBlocks.DEEPSLATE_SILVER_ORE);
+                       output.accept(ModBlocks.RAW_SILVER_BLOCK);
+                       output.accept(ModBlocks.SILVER_BLOCK);
+
+                       output.accept(ModBlocks.SOLAR_ALLOY_SMELTER);
                     }).build());
 
     public static void register(IEventBus eventBus) {

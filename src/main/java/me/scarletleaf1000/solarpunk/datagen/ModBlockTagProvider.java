@@ -41,7 +41,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CINDERITE_BLOCK.get())
                 .add(ModBlocks.SILVER_BLOCK.get())
                 .add(ModBlocks.RAW_CINDERITE_BLOCK.get())
-                .add(ModBlocks.RAW_SILVER_BLOCK.get());
+                .add(ModBlocks.RAW_SILVER_BLOCK.get())
+        ;
 
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.CINDERITE_ORE.get())
@@ -51,13 +52,16 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.CINDERITE_BLOCK.get())
                 .add(ModBlocks.SILVER_BLOCK.get())
                 .add(ModBlocks.RAW_CINDERITE_BLOCK.get())
-                .add(ModBlocks.RAW_SILVER_BLOCK.get());
+                .add(ModBlocks.RAW_SILVER_BLOCK.get())
+                .add(ModBlocks.SOLAR_ALLOY_SMELTER.get())
+        ;
 
         this.tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(ModBlocks.CINDERITE_ORE.get())
                 .add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get())
                 .add(ModBlocks.SILVER_ORE.get())
-                .add(ModBlocks.DEEPSLATE_SILVER_ORE.get());
+                .add(ModBlocks.DEEPSLATE_SILVER_ORE.get())
+        ;
 
         this.tag(Tags.Blocks.ORES)
                 .addTag(ORES_CINDERITE)
