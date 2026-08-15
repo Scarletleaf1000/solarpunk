@@ -1,0 +1,6 @@
+{
+  "parent": "solarpunk:item/generated",
+  "textures": {
+    "layer0": "solarpunk:item/heliolite_shard"
+  }
+}
