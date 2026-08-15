@@ -43,6 +43,37 @@ public class ModBlocks {
     public static final DeferredBlock<AmethystClusterBlock> SMALL_HELIOLITE_BUD = registerCluster("small_heliolite_bud",
             3f, 6f, SoundType.SMALL_AMETHYST_BUD, 1);
 
+    public static final DeferredBlock<Block> CINDERITE_ORE = registerOre("cinderite_ore", false);
+    public static final DeferredBlock<Block> DEEPSLATE_CINDERITE_ORE = registerOre("deepslate_cinderite_ore", true);
+    public static final DeferredBlock<Block> SILVER_ORE = registerOre("silver_ore", false);
+    public static final DeferredBlock<Block> DEEPSLATE_SILVER_ORE = registerOre("deepslate_silver_ore", true);
+
+    public static final DeferredBlock<Block> CINDERITE_BLOCK = registerBlock("cinderite_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SILVER_BLOCK = registerBlock("silver_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> RAW_CINDERITE_BLOCK = registerBlock("raw_cinderite_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> RAW_SILVER_BLOCK = registerBlock("raw_silver_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .requiresCorrectToolForDrops()));
+
+    private static DeferredBlock<Block> registerOre(String name, boolean deepslate) {
+        return registerBlock(name, () -> new Block(BlockBehaviour.Properties.of()
+                .strength(deepslate ? 4.5f : 3f, 3f)
+                .sound(deepslate ? SoundType.DEEPSLATE : SoundType.STONE)
+                .requiresCorrectToolForDrops()));
+    }
+
     private static DeferredBlock<AmethystClusterBlock> registerCluster(String name, float height, float inset, SoundType sound, int lightLevel) {
         return registerBlock(name, () -> new AmethystClusterBlock(height, inset,
                 BlockBehaviour.Properties.of()

@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk.datagen;
 
 import me.scarletleaf1000.solarpunk.Solarpunk;
+import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import me.scarletleaf1000.solarpunk.item.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -58,5 +59,42 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 .add(ModItems.RAW_CINDERITE.get());
         this.tag(RAW_MATERIALS_SILVER)
                 .add(ModItems.RAW_SILVER.get());
+
+        this.tag(Tags.Items.ORES)
+                .addTag(ORES_CINDERITE)
+                .addTag(ORES_SILVER);
+        this.tag(ORES_CINDERITE)
+                .add(ModBlocks.CINDERITE_ORE.get().asItem())
+                .add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get().asItem());
+        this.tag(ORES_SILVER)
+                .add(ModBlocks.SILVER_ORE.get().asItem())
+                .add(ModBlocks.DEEPSLATE_SILVER_ORE.get().asItem());
+        this.tag(Tags.Items.ORES_IN_GROUND_STONE)
+                .add(ModBlocks.CINDERITE_ORE.get().asItem())
+                .add(ModBlocks.SILVER_ORE.get().asItem());
+        this.tag(Tags.Items.ORES_IN_GROUND_DEEPSLATE)
+                .add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get().asItem())
+                .add(ModBlocks.DEEPSLATE_SILVER_ORE.get().asItem());
+
+        this.tag(Tags.Items.STORAGE_BLOCKS)
+                .addTag(STORAGE_BLOCKS_CINDERITE)
+                .addTag(STORAGE_BLOCKS_SILVER)
+                .addTag(STORAGE_BLOCKS_RAW_CINDERITE)
+                .addTag(STORAGE_BLOCKS_RAW_SILVER);
+        this.tag(STORAGE_BLOCKS_CINDERITE)
+                .add(ModBlocks.CINDERITE_BLOCK.get().asItem());
+        this.tag(STORAGE_BLOCKS_SILVER)
+                .add(ModBlocks.SILVER_BLOCK.get().asItem());
+        this.tag(STORAGE_BLOCKS_RAW_CINDERITE)
+                .add(ModBlocks.RAW_CINDERITE_BLOCK.get().asItem());
+        this.tag(STORAGE_BLOCKS_RAW_SILVER)
+                .add(ModBlocks.RAW_SILVER_BLOCK.get().asItem());
     }
+
+    public static final TagKey<Item> ORES_CINDERITE = commonTag("ores/cinderite");
+    public static final TagKey<Item> ORES_SILVER = commonTag("ores/silver");
+    public static final TagKey<Item> STORAGE_BLOCKS_CINDERITE = commonTag("storage_blocks/cinderite");
+    public static final TagKey<Item> STORAGE_BLOCKS_SILVER = commonTag("storage_blocks/silver");
+    public static final TagKey<Item> STORAGE_BLOCKS_RAW_CINDERITE = commonTag("storage_blocks/raw_cinderite");
+    public static final TagKey<Item> STORAGE_BLOCKS_RAW_SILVER = commonTag("storage_blocks/raw_silver");
 }

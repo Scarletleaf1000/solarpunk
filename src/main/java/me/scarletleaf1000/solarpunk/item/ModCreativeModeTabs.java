@@ -46,6 +46,15 @@ public class ModCreativeModeTabs {
                        pOutput.accept(ModBlocks.MEDIUM_HELIOLITE_BUD);
                        pOutput.accept(ModBlocks.LARGE_HELIOLITE_BUD);
                        pOutput.accept(ModBlocks.HELIOLITE_CLUSTER);
+
+                       pOutput.accept(ModBlocks.CINDERITE_ORE);
+                       pOutput.accept(ModBlocks.DEEPSLATE_CINDERITE_ORE);
+                       pOutput.accept(ModBlocks.RAW_CINDERITE_BLOCK);
+                       pOutput.accept(ModBlocks.CINDERITE_BLOCK);
+                       pOutput.accept(ModBlocks.SILVER_ORE);
+                       pOutput.accept(ModBlocks.DEEPSLATE_SILVER_ORE);
+                       pOutput.accept(ModBlocks.RAW_SILVER_BLOCK);
+                       pOutput.accept(ModBlocks.SILVER_BLOCK);
                     }).build());
 
     public static void register(IEventBus eventBus) {

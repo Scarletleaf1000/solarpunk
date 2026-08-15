@@ -23,6 +23,15 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.HELIOLITE_BLOCK);
         blockWithItem(ModBlocks.BUDDING_HELIOLITE);
 
+        blockWithItem(ModBlocks.CINDERITE_ORE);
+        blockWithItem(ModBlocks.DEEPSLATE_CINDERITE_ORE);
+        blockWithItem(ModBlocks.SILVER_ORE);
+        blockWithItem(ModBlocks.DEEPSLATE_SILVER_ORE);
+        blockWithItem(ModBlocks.CINDERITE_BLOCK);
+        blockWithItem(ModBlocks.SILVER_BLOCK);
+        blockWithItem(ModBlocks.RAW_CINDERITE_BLOCK);
+        blockWithItem(ModBlocks.RAW_SILVER_BLOCK);
+
         clusterBlock(ModBlocks.HELIOLITE_CLUSTER);
         clusterBlock(ModBlocks.LARGE_HELIOLITE_BUD);
         clusterBlock(ModBlocks.MEDIUM_HELIOLITE_BUD);

@@ -29,6 +29,16 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         dropSelf(ModBlocks.HELIOLITE_BLOCK.get());
 
+        dropSelf(ModBlocks.CINDERITE_BLOCK.get());
+        dropSelf(ModBlocks.SILVER_BLOCK.get());
+        dropSelf(ModBlocks.RAW_CINDERITE_BLOCK.get());
+        dropSelf(ModBlocks.RAW_SILVER_BLOCK.get());
+
+        add(ModBlocks.CINDERITE_ORE.get(), block -> createOreDrop(block, ModItems.RAW_CINDERITE.get()));
+        add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get(), block -> createOreDrop(block, ModItems.RAW_CINDERITE.get()));
+        add(ModBlocks.SILVER_ORE.get(), block -> createOreDrop(block, ModItems.RAW_SILVER.get()));
+        add(ModBlocks.DEEPSLATE_SILVER_ORE.get(), block -> createOreDrop(block, ModItems.RAW_SILVER.get()));
+
         dropWhenSilkTouch(ModBlocks.SMALL_HELIOLITE_BUD.get());
         dropWhenSilkTouch(ModBlocks.MEDIUM_HELIOLITE_BUD.get());
         dropWhenSilkTouch(ModBlocks.LARGE_HELIOLITE_BUD.get());

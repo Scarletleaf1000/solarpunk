@@ -13,6 +13,14 @@
   "block.solarpunk.large_heliolite_bud": "Large Heliolite Bud",
   "block.solarpunk.medium_heliolite_bud": "Medium Heliolite Bud",
   "block.solarpunk.small_heliolite_bud": "Small Heliolite Bud",
+  "block.solarpunk.cinderite_ore": "Cinderite Ore",
+  "block.solarpunk.deepslate_cinderite_ore": "Deepslate Cinderite Ore",
+  "block.solarpunk.raw_cinderite_block": "Block of Raw Cinderite",
+  "block.solarpunk.cinderite_block": "Block of Cinderite",
+  "block.solarpunk.silver_ore": "Silver Ore",
+  "block.solarpunk.deepslate_silver_ore": "Deepslate Silver Ore",
+  "block.solarpunk.raw_silver_block": "Block of Raw Silver",
+  "block.solarpunk.silver_block": "Block of Silver",
 
   "itemGroup.solarpunk.item_tab": "Solarpunk Items",
   "itemGroup.solarpunk.block_tab": "Solarpunk Blocks"
