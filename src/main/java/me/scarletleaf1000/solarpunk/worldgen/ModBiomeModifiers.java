@@ -17,6 +17,9 @@ public class ModBiomeModifiers {
     public static final ResourceKey<BiomeModifier> ADD_SILVER_ORE = registerKey("add_silver_ore");
     public static final ResourceKey<BiomeModifier> ADD_CINDERITE_ORE = registerKey("add_cinderite_ore");
 
+    public static final ResourceKey<BiomeModifier> ADD_HELIOLITE_GEODE = registerKey("add_heliolite_geode");
+
+
     public static void bootstrap(BootstrapContext<BiomeModifier> context) {
         var placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         var biomes = context.lookup(Registries.BIOME);
@@ -26,11 +29,16 @@ public class ModBiomeModifiers {
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.SILVER_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
         ));
-
         context.register(ADD_CINDERITE_ORE, new BiomeModifiers.AddFeaturesBiomeModifier(
-                biomes.getOrThrow(BiomeTags.IS_NETHER),
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.CINDERITE_ORE_PLACED_KEY)),
                 GenerationStep.Decoration.UNDERGROUND_ORES
+        ));
+
+        context.register(ADD_HELIOLITE_GEODE, new BiomeModifiers.AddFeaturesBiomeModifier(
+                biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
+                HolderSet.direct(placedFeatures.getOrThrow(ModPlacedFeatures.HELIOLITE_GEODE_PLACED_KEY)),
+                GenerationStep.Decoration.LOCAL_MODIFICATIONS
         ));
 
     }
