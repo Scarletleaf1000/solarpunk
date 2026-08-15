@@ -5,8 +5,11 @@ import me.scarletleaf1000.solarpunk.Solarpunk;
 import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.AmethystClusterBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -32,6 +35,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.RAW_CINDERITE_BLOCK);
         blockWithItem(ModBlocks.RAW_SILVER_BLOCK);
 
+        horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true);
+
         clusterBlock(ModBlocks.HELIOLITE_CLUSTER);
         clusterBlock(ModBlocks.LARGE_HELIOLITE_BUD);
         clusterBlock(ModBlocks.MEDIUM_HELIOLITE_BUD);
@@ -51,6 +56,31 @@ public class ModBlockStateProvider extends BlockStateProvider {
             };
             return ConfiguredModel.builder().modelFile(model).rotationX(x).rotationY(y).build();
         }, AmethystClusterBlock.WATERLOGGED);
+    }
+
+    private void horizontalFaceBlock(DeferredBlock<Block> block, boolean hasOnOffTexture) {
+        String name = block.getId().getPath();
+        ResourceLocation side = modLoc("block/" + name + "_side");
+        ResourceLocation front = modLoc("block/" + name + "_front");
+        ResourceLocation top = modLoc("block/" + name + "_top");
+
+        ModelFile offModel = models().orientable(name, side, front, top);
+        ModelFile onModel = hasOnOffTexture
+                ? models().orientable(name + "_on", side, modLoc("block/" + name + "_front_on"), top)
+                : offModel;
+
+        getVariantBuilder(block.get()).forAllStates(state -> {
+            ModelFile model = hasOnOffTexture && state.getValue(BlockStateProperties.LIT) ? onModel : offModel;
+            int yRot = switch (state.getValue(HorizontalDirectionalBlock.FACING)) {
+                case EAST -> 90;
+                case SOUTH -> 180;
+                case WEST -> 270;
+                default -> 0;
+            };
+            return ConfiguredModel.builder().modelFile(model).rotationY(yRot).build();
+        });
+
+        simpleBlockItem(block.get(), offModel);
     }
 
     private void blockWithItem(DeferredBlock<Block> block) {
