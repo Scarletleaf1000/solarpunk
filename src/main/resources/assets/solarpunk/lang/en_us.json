@@ -1,3 +1,6 @@
 {
-  "item.solarpunk.heliolite_shard": "Heliolite Shard"
+  "item.solarpunk.heliolite_shard": "Heliolite Shard",
+
+  "itemGroup.solarpunk.item_tab": "Solarpunk Items",
+  "itemGroup.solarpunk.block_tab": "Solarpunk Blocks"
 }
