@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk.item;
 
 import me.scarletleaf1000.solarpunk.Solarpunk;
+import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +33,8 @@ public class ModCreativeModeTabs {
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(Solarpunk.MOD_ID, "solarpunk_item_tab"))
                     //.withSearchBar()
                     .displayItems((pParameters, pOutput) -> {
-                       pOutput.accept(Blocks.FURNACE);
+                       pOutput.accept(ModBlocks.HELIOLITE_BLOCK);
+                       pOutput.accept(ModBlocks.BUDDING_HELIOLITE_BLOCK);
                     }).build());
 
     public static void register(IEventBus eventBus) {

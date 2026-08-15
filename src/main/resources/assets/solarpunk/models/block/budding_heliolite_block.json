@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "solarpunk:block/budding_heliolite_block"
+  }
+}
