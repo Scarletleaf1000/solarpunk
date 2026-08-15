@@ -64,9 +64,6 @@ public class Solarpunk {
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.INGREDIENTS) {
-            event.accept(ModItems.HELIOLITE_SHARD);
-        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
