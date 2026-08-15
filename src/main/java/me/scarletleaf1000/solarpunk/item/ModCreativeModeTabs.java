@@ -20,7 +20,7 @@ public class ModCreativeModeTabs {
             CREATIVE_MODE_TABS.register("solarpunk_item_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.solarpunk.item_tab"))
                     .icon(() -> new ItemStack(ModItems.HELIOLITE_SHARD.get()))
-                    .withSearchBar()
+                    //.withSearchBar()
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.HELIOLITE_SHARD);
                     }).build());
@@ -30,7 +30,7 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("itemGroup.solarpunk.block_tab"))
                     .icon(() -> new ItemStack(ModItems.HELIOLITE_SHARD.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(Solarpunk.MOD_ID, "solarpunk_item_tab"))
-                    .withSearchBar()
+                    //.withSearchBar()
                     .displayItems((pParameters, pOutput) -> {
                        pOutput.accept(Blocks.FURNACE);
                     }).build());
