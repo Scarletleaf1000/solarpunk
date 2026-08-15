@@ -25,7 +25,8 @@ public class ModBlocks {
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(2f)
                     .explosionResistance(2f)
-                    .noLootTable()));
+                    .noLootTable()
+                    .requiresCorrectToolForDrops()));
 
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
