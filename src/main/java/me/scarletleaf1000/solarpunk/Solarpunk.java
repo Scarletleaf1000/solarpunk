@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk;
 
 import com.mojang.logging.LogUtils;
+import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import me.scarletleaf1000.solarpunk.item.ModCreativeModeTabs;
 import me.scarletleaf1000.solarpunk.item.ModItems;
 import net.minecraft.client.Minecraft;
@@ -36,6 +37,7 @@ public class Solarpunk {
         modEventBus.addListener(this::commonSetup);
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
 
         ModCreativeModeTabs.register(modEventBus);
 
