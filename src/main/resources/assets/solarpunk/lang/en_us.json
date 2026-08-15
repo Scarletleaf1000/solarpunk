@@ -3,6 +3,10 @@
 
   "block.solarpunk.heliolite_block": "Heliolite Block",
   "block.solarpunk.budding_heliolite": "Budding Heliolite Block",
+  "block.solarpunk.heliolite_cluster": "Heliolite Cluster",
+  "block.solarpunk.large_heliolite_bud": "Large Heliolite Bud",
+  "block.solarpunk.medium_heliolite_bud": "Medium Heliolite Bud",
+  "block.solarpunk.small_heliolite_bud": "Small Heliolite Bud",
 
   "itemGroup.solarpunk.item_tab": "Solarpunk Items",
   "itemGroup.solarpunk.block_tab": "Solarpunk Blocks"

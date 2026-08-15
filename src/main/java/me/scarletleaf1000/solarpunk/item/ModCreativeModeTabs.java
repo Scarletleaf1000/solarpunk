@@ -35,6 +35,10 @@ public class ModCreativeModeTabs {
                     .displayItems((pParameters, pOutput) -> {
                        pOutput.accept(ModBlocks.HELIOLITE_BLOCK);
                        pOutput.accept(ModBlocks.BUDDING_HELIOLITE);
+                       pOutput.accept(ModBlocks.SMALL_HELIOLITE_BUD);
+                       pOutput.accept(ModBlocks.MEDIUM_HELIOLITE_BUD);
+                       pOutput.accept(ModBlocks.LARGE_HELIOLITE_BUD);
+                       pOutput.accept(ModBlocks.HELIOLITE_CLUSTER);
                     }).build());
 
     public static void register(IEventBus eventBus) {

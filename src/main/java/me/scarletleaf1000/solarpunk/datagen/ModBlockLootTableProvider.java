@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk.datagen;
 
 import me.scarletleaf1000.solarpunk.block.ModBlocks;
+import me.scarletleaf1000.solarpunk.item.ModItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
@@ -27,6 +28,16 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         dropSelf(ModBlocks.HELIOLITE_BLOCK.get());
+
+        dropWhenSilkTouch(ModBlocks.SMALL_HELIOLITE_BUD.get());
+        dropWhenSilkTouch(ModBlocks.MEDIUM_HELIOLITE_BUD.get());
+        dropWhenSilkTouch(ModBlocks.LARGE_HELIOLITE_BUD.get());
+
+        Holder<Enchantment> fortune = this.registries.lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.FORTUNE);
+        this.add(ModBlocks.HELIOLITE_CLUSTER.get(), block -> createSilkTouchDispatchTable(block,
+                LootItem.lootTableItem(ModItems.HELIOLITE_SHARD.get())
+                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(2.0F, 3.0F)))
+                        .apply(ApplyBonusCount.addUniformBonusCount(fortune))));
     }
 
     @Override

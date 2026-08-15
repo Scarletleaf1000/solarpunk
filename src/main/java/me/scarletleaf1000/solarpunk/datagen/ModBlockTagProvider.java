@@ -20,10 +20,18 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(ModBlocks.HELIOLITE_BLOCK.get())
-                .add(ModBlocks.BUDDING_HELIOLITE.get());
+                .add(ModBlocks.BUDDING_HELIOLITE.get())
+                .add(ModBlocks.HELIOLITE_CLUSTER.get())
+                .add(ModBlocks.LARGE_HELIOLITE_BUD.get())
+                .add(ModBlocks.MEDIUM_HELIOLITE_BUD.get())
+                .add(ModBlocks.SMALL_HELIOLITE_BUD.get());
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)
                 .add(ModBlocks.HELIOLITE_BLOCK.get())
-                .add(ModBlocks.BUDDING_HELIOLITE.get());
+                .add(ModBlocks.BUDDING_HELIOLITE.get())
+                .add(ModBlocks.HELIOLITE_CLUSTER.get())
+                .add(ModBlocks.LARGE_HELIOLITE_BUD.get())
+                .add(ModBlocks.MEDIUM_HELIOLITE_BUD.get())
+                .add(ModBlocks.SMALL_HELIOLITE_BUD.get());
     }
 }
