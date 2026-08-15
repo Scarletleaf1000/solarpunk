@@ -24,6 +24,13 @@ public class ModCreativeModeTabs {
                     //.withSearchBar()
                     .displayItems((pParameters, pOutput) -> {
                         pOutput.accept(ModItems.HELIOLITE_SHARD);
+                        pOutput.accept(ModItems.CINDERITE_INGOT);
+                        pOutput.accept(ModItems.CINDERITE_NUGGET);
+                        pOutput.accept(ModItems.RAW_CINDERITE);
+                        pOutput.accept(ModItems.SILVER_INGOT);
+                        pOutput.accept(ModItems.SILVER_NUGGET);
+                        pOutput.accept(ModItems.RAW_SILVER);
+
                     }).build());
 
     public static final Supplier<CreativeModeTab> SOLARPUNK_BLOCKS_TAB =

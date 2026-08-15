@@ -12,6 +12,19 @@ public class ModItems {
     public static final DeferredItem<Item> HELIOLITE_SHARD = ITEMS.registerItem("heliolite_shard",
             Item::new, new Item.Properties());
 
+    public static final DeferredItem<Item> CINDERITE_INGOT = ITEMS.registerItem("cinderite_ingot",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> RAW_CINDERITE = ITEMS.registerItem("raw_cinderite",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> SILVER_INGOT = ITEMS.registerItem("silver_ingot",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> RAW_SILVER = ITEMS.registerItem("raw_silver",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> CINDERITE_NUGGET = ITEMS.registerItem("cinderite_nugget",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> SILVER_NUGGET = ITEMS.registerItem("silver_nugget",
+            Item::new, new Item.Properties());
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

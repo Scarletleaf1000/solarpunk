@@ -1,5 +1,11 @@
 {
   "item.solarpunk.heliolite_shard": "Heliolite Shard",
+  "item.solarpunk.cinderite_ingot": "Cinderite Ingot",
+  "item.solarpunk.raw_cinderite": "Raw Cinderite",
+  "item.solarpunk.silver_ingot": "Silver Ingot",
+  "item.solarpunk.raw_silver": "Raw Silver",
+  "item.solarpunk.cinderite_nugget": "Cinderite Nugget",
+  "item.solarpunk.silver_nugget": "Silver Nugget",
 
   "block.solarpunk.heliolite_block": "Heliolite Block",
   "block.solarpunk.budding_heliolite": "Budding Heliolite Block",

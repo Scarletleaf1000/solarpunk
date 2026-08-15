@@ -18,6 +18,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels() {
         basicItem(ModItems.HELIOLITE_SHARD.get());
+        basicItem(ModItems.CINDERITE_INGOT.get());
+        basicItem(ModItems.RAW_CINDERITE.get());
+        basicItem(ModItems.SILVER_INGOT.get());
+        basicItem(ModItems.RAW_SILVER.get());
+        basicItem(ModItems.CINDERITE_NUGGET.get());
+        basicItem(ModItems.SILVER_NUGGET.get());
 
         clusterItem(ModBlocks.HELIOLITE_CLUSTER);
         clusterItem(ModBlocks.LARGE_HELIOLITE_BUD);
