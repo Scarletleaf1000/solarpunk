@@ -23,6 +23,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.BUDDING_HELIOLITE.get());
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)
-                .add(ModBlocks.HELIOLITE_BLOCK.get());
+                .add(ModBlocks.HELIOLITE_BLOCK.get())
+                .add(ModBlocks.BUDDING_HELIOLITE.get());
     }
 }

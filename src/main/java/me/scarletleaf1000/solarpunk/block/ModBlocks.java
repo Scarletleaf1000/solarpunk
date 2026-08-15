@@ -23,7 +23,7 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> BUDDING_HELIOLITE = registerBlock("budding_heliolite",
             () -> new Block(BlockBehaviour.Properties.of()
-                    .strength(2f)
+                    .strength(4f)
                     .explosionResistance(2f)
                     .noLootTable()
                     .requiresCorrectToolForDrops()));

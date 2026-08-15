@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk.datagen;
 
 import me.scarletleaf1000.solarpunk.Solarpunk;
+import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import me.scarletleaf1000.solarpunk.item.ModItems;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;

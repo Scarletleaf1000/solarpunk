@@ -21,6 +21,6 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void blockWithItem(DeferredBlock<Block> block) {
-        simpleBlock(block.get(), cubeAll(block.get()));
+        simpleBlockWithItem(block.get(), cubeAll(block.get()));
     }
 }
