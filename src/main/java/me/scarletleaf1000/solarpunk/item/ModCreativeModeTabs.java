@@ -29,12 +29,12 @@ public class ModCreativeModeTabs {
     public static final Supplier<CreativeModeTab> SOLARPUNK_BLOCKS_TAB =
             CREATIVE_MODE_TABS.register("solarpunk_block_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.solarpunk.block_tab"))
-                    .icon(() -> new ItemStack(ModItems.HELIOLITE_SHARD.get()))
+                    .icon(() -> new ItemStack(ModBlocks.HELIOLITE_BLOCK.get()))
                     .withTabsBefore(ResourceLocation.fromNamespaceAndPath(Solarpunk.MOD_ID, "solarpunk_item_tab"))
                     //.withSearchBar()
                     .displayItems((pParameters, pOutput) -> {
                        pOutput.accept(ModBlocks.HELIOLITE_BLOCK);
-                       pOutput.accept(ModBlocks.BUDDING_HELIOLITE_BLOCK);
+                       pOutput.accept(ModBlocks.BUDDING_HELIOLITE);
                     }).build());
 
     public static void register(IEventBus eventBus) {
