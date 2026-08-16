@@ -28,6 +28,8 @@
 
   "block.menu.solarpunk.solar_alloy_smelter": "Simple Solar Alloy Smelter",
 
+  "recipe.solarpunk.alloy_smelting": "Alloy Smelting",
+
   "itemGroup.solarpunk.item_tab": "Solarpunk Items",
   "itemGroup.solarpunk.block_tab": "Solarpunk Blocks"
 }
