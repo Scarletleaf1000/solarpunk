@@ -42,7 +42,7 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
         if(menu.isCrafting()) {
-            guiGraphics.blit(ARROW_TEXTURE, x + 67, y + 42, 0, 0, 8, menu.getScaledArrowProgress(), 8, 24);
+            guiGraphics.blit(ARROW_TEXTURE, x + 67, y + 42, 0, 0, 8, menu.getScaledArrowProgress(), 8, 18);
         }
     }
 
