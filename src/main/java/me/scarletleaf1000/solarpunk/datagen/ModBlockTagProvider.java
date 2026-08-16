@@ -53,6 +53,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.SILVER_BLOCK.get())
                 .add(ModBlocks.RAW_CINDERITE_BLOCK.get())
                 .add(ModBlocks.RAW_SILVER_BLOCK.get())
+                .add(ModBlocks.ELECTRUM_BLOCK.get())
                 .add(ModBlocks.SOLAR_ALLOY_SMELTER.get())
         ;
 
@@ -61,6 +62,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get())
                 .add(ModBlocks.SILVER_ORE.get())
                 .add(ModBlocks.DEEPSLATE_SILVER_ORE.get())
+                .add(ModBlocks.ELECTRUM_BLOCK.get())
         ;
 
         this.tag(Tags.Blocks.ORES)
@@ -83,7 +85,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .addTag(STORAGE_BLOCKS_CINDERITE)
                 .addTag(STORAGE_BLOCKS_SILVER)
                 .addTag(STORAGE_BLOCKS_RAW_CINDERITE)
-                .addTag(STORAGE_BLOCKS_RAW_SILVER);
+                .addTag(STORAGE_BLOCKS_RAW_SILVER)
+                .addTag(STORAGE_BLOCKS_ELECTRUM);
         this.tag(STORAGE_BLOCKS_CINDERITE)
                 .add(ModBlocks.CINDERITE_BLOCK.get());
         this.tag(STORAGE_BLOCKS_SILVER)
@@ -92,6 +95,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.RAW_CINDERITE_BLOCK.get());
         this.tag(STORAGE_BLOCKS_RAW_SILVER)
                 .add(ModBlocks.RAW_SILVER_BLOCK.get());
+        this.tag(STORAGE_BLOCKS_ELECTRUM)
+                .add(ModBlocks.ELECTRUM_BLOCK.get());
     }
 
     public static final TagKey<Block> ORES_CINDERITE = commonTag("ores/cinderite");
@@ -100,6 +105,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
     public static final TagKey<Block> STORAGE_BLOCKS_SILVER = commonTag("storage_blocks/silver");
     public static final TagKey<Block> STORAGE_BLOCKS_RAW_CINDERITE = commonTag("storage_blocks/raw_cinderite");
     public static final TagKey<Block> STORAGE_BLOCKS_RAW_SILVER = commonTag("storage_blocks/raw_silver");
+    public static final TagKey<Block> STORAGE_BLOCKS_ELECTRUM = commonTag("storage_blocks/electrum");
 
     private static TagKey<Block> commonTag(String path) {
         return TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", path));

@@ -30,6 +30,8 @@ public class ModCreativeModeTabs {
                         pOutput.accept(ModItems.SILVER_INGOT);
                         pOutput.accept(ModItems.SILVER_NUGGET);
                         pOutput.accept(ModItems.RAW_SILVER);
+                        pOutput.accept(ModItems.ELECTRUM_INGOT);
+                        pOutput.accept(ModItems.ELECTRUM_NUGGET);
 
                     }).build());
 
@@ -55,6 +57,7 @@ public class ModCreativeModeTabs {
                        output.accept(ModBlocks.DEEPSLATE_SILVER_ORE);
                        output.accept(ModBlocks.RAW_SILVER_BLOCK);
                        output.accept(ModBlocks.SILVER_BLOCK);
+                       output.accept(ModBlocks.ELECTRUM_BLOCK);
 
                        output.accept(ModBlocks.SOLAR_ALLOY_SMELTER);
                     }).build());

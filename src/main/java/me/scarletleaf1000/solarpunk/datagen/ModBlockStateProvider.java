@@ -34,6 +34,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.SILVER_BLOCK);
         blockWithItem(ModBlocks.RAW_CINDERITE_BLOCK);
         blockWithItem(ModBlocks.RAW_SILVER_BLOCK);
+        blockWithItem(ModBlocks.ELECTRUM_BLOCK);
 
         horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true);
 

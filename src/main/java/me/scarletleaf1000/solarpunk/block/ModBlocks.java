@@ -58,6 +58,11 @@ public class ModBlocks {
                     .strength(5f, 6f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> ELECTRUM_BLOCK = registerBlock("electrum_block",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()));
     public static final DeferredBlock<Block> RAW_CINDERITE_BLOCK = registerBlock("raw_cinderite_block",
             () -> new Block(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)

@@ -31,11 +31,15 @@ public class ModRecipeProvider extends RecipeProvider {
                 RecipeCategory.MISC, ModItems.CINDERITE_INGOT.get());
         nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, ModItems.SILVER_NUGGET.get(),
                 RecipeCategory.MISC, ModItems.SILVER_INGOT.get());
+        nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, ModItems.ELECTRUM_NUGGET.get(),
+                RecipeCategory.MISC, ModItems.ELECTRUM_INGOT.get());
 
         nineBlockStorageRecipesRecipesWithCustomUnpacking(pRecipeOutput, RecipeCategory.MISC, ModItems.CINDERITE_INGOT.get(),
                 RecipeCategory.BUILDING_BLOCKS, ModBlocks.CINDERITE_BLOCK.get(), "cinderite_ingot_from_cinderite_block", "cinderite_ingot");
         nineBlockStorageRecipesRecipesWithCustomUnpacking(pRecipeOutput, RecipeCategory.MISC, ModItems.SILVER_INGOT.get(),
                 RecipeCategory.BUILDING_BLOCKS, ModBlocks.SILVER_BLOCK.get(), "silver_ingot_from_silver_block", "silver_ingot");
+        nineBlockStorageRecipesRecipesWithCustomUnpacking(pRecipeOutput, RecipeCategory.MISC, ModItems.ELECTRUM_INGOT.get(),
+                RecipeCategory.BUILDING_BLOCKS, ModBlocks.ELECTRUM_BLOCK.get(), "electrum_ingot_from_electrum_block", "electrum_ingot");
         nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, ModItems.RAW_CINDERITE.get(),
                 RecipeCategory.BUILDING_BLOCKS, ModBlocks.RAW_CINDERITE_BLOCK.get());
         nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, ModItems.RAW_SILVER.get(),
