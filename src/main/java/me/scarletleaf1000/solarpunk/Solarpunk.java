@@ -5,6 +5,7 @@ import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import me.scarletleaf1000.solarpunk.block.entity.ModBlockEntities;
 import me.scarletleaf1000.solarpunk.item.ModCreativeModeTabs;
 import me.scarletleaf1000.solarpunk.item.ModItems;
+import me.scarletleaf1000.solarpunk.recipe.ModRecipes;
 import me.scarletleaf1000.solarpunk.screen.ModMenuTypes;
 import me.scarletleaf1000.solarpunk.screen.custom.SolarAlloySmelterScreen;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,7 @@ public class Solarpunk {
         ModBlocks.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModMenuTypes.register(modEventBus);
+        ModRecipes.register(modEventBus);
 
         ModCreativeModeTabs.register(modEventBus);
 

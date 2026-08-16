@@ -8,6 +8,8 @@ import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.List;
@@ -44,6 +46,14 @@ public class ModRecipeProvider extends RecipeProvider {
                 RecipeCategory.BUILDING_BLOCKS, ModBlocks.RAW_CINDERITE_BLOCK.get());
         nineBlockStorageRecipes(pRecipeOutput, RecipeCategory.MISC, ModItems.RAW_SILVER.get(),
                 RecipeCategory.BUILDING_BLOCKS, ModBlocks.RAW_SILVER_BLOCK.get());
+
+        AlloySmelterRecipeBuilder.alloySmelting(RecipeCategory.MISC, new ItemStack(ModItems.ELECTRUM_INGOT.get(), 6), 300)
+                .requires(Items.GOLD_INGOT)
+                .requires(ModItems.SILVER_INGOT.get(), 4)
+                .requires(Items.REDSTONE, 2)
+                .unlockedBy("has_gold_ingot", has(Items.GOLD_INGOT))
+                .unlockedBy("has_silver_ingot", has(ModItems.SILVER_INGOT.get()))
+                .save(pRecipeOutput);
 
         List<ItemLike> cinderiteSmeltables = List.of(
                 ModBlocks.CINDERITE_ORE.get(),
