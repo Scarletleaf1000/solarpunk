@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -99,19 +100,30 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
     }
 
     public void tick(Level level, BlockPos pos, BlockState state) {
-           if (hasRecipe() && isOutputSlotReceivable()) {
-               increaseProgress();
-               level.setBlock(pos, state.setValue(LIT, true), 3);
-               setChanged(level, pos, state);
+        if (hasRecipe() && isOutputSlotReceivable() && hasSunlight(level, pos)) {
+            increaseProgress();
+            level.setBlock(pos, state.setValue(LIT, true), 3);
+            setChanged(level, pos, state);
 
-               if (hasCraftingFinished()) {
-                   craftItem();
-                   resetProgress();
-               }
-           } else {
-               resetProgress();
-               level.setBlock(pos, state.setValue(LIT, false), 3);
-           }
+            if (hasCraftingFinished()) {
+                craftItem();
+                resetProgress();
+            }
+        } else {
+            resetProgress();
+            level.setBlock(pos, state.setValue(LIT, false), 3);
+        }
+    }
+
+    private boolean hasSunlight(Level level, BlockPos pos) {
+        if (level.isClientSide) return false;
+        if (level.getDayTime() > 23000 || level.getDayTime() < 13000) {
+            if (level.getBrightness(LightLayer.SKY, pos.above()) > 13) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void resetProgress() {
