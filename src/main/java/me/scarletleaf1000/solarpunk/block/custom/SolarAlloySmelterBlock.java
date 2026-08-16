@@ -1,6 +1,7 @@
 package me.scarletleaf1000.solarpunk.block.custom;
 
 import com.mojang.serialization.MapCodec;
+import me.scarletleaf1000.solarpunk.block.entity.ModBlockEntities;
 import me.scarletleaf1000.solarpunk.block.entity.custom.SolarAlloySmelterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +19,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -70,6 +73,14 @@ public class SolarAlloySmelterBlock extends BaseEntityBlock {
             }
         }
         super.onRemove(blockState, level, blockPos, newState, movedByPiston);
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide) return null;
+
+        return createTickerHelper(blockEntityType, ModBlockEntities.SOLAR_ALLOY_SMELTER_BE.get(),
+                (level1, pos, state1, blockEntity) -> blockEntity.tick(level1, pos, state1));
     }
 
     @Override

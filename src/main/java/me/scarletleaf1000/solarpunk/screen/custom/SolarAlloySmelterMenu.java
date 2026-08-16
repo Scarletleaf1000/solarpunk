@@ -6,10 +6,7 @@ import me.scarletleaf1000.solarpunk.screen.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -18,24 +15,39 @@ import org.jetbrains.annotations.Nullable;
 
 public class SolarAlloySmelterMenu extends AbstractContainerMenu {
     public final SolarAlloySmelterBlockEntity blockEntity;
-    public final Level level;
+    private final Level level;
+    private final ContainerData data;
 
-    public SolarAlloySmelterMenu(int containerId, Inventory inv, FriendlyByteBuf data) {
-       this(containerId, inv, inv.player.level().getBlockEntity(data.readBlockPos()));
+    public SolarAlloySmelterMenu(int containerId, Inventory inv, FriendlyByteBuf extradata) {
+       this(containerId, inv, inv.player.level().getBlockEntity(extradata.readBlockPos()), new SimpleContainerData(2));
     }
 
-    public SolarAlloySmelterMenu(int containerId, Inventory inv, @Nullable BlockEntity blockEntity) {
+    public SolarAlloySmelterMenu(int containerId, Inventory inv, @Nullable BlockEntity blockEntity, ContainerData data) {
         super(ModMenuTypes.SOLAR_ALLOY_SMELTER_MENU.get(), containerId);
         this.blockEntity = (SolarAlloySmelterBlockEntity) blockEntity;
         this.level = blockEntity.getLevel();
+        this.data = data;
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 0, 56, 24));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 1, 79, 17));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 2, 102, 24));
-        this.addSlot(new SlotItemHandler(this.blockEntity.inventory, 3, 79, 58));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 0, 56, 24));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 1, 79, 17));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 2, 102, 24));
+        this.addSlot(new SlotItemHandler(this.blockEntity.itemHandler, 3, 79, 58));
+
+        addDataSlots(data);
+    }
+
+    public boolean isCrafting() {
+        return data.get(0) > 0;
+    }
+    public int getScaledArrowProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);
+        int arrowPixelSize = 16;
+
+        return maxProgress != 0 && progress != 0 ? progress * arrowPixelSize / maxProgress : 0;
     }
 
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -78,7 +90,8 @@ public class SolarAlloySmelterMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, ModBlocks.SOLAR_ALLOY_SMELTER.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
+                player, ModBlocks.SOLAR_ALLOY_SMELTER.get());
     }
 
     private void addPlayerInventory(Inventory playerInventory) {
