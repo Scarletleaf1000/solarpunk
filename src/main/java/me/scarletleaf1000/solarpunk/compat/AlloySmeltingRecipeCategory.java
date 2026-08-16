@@ -14,7 +14,11 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AlloySmeltingRecipeCategory implements IRecipeCategory {
     public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Solarpunk.MOD_ID, "alloy_smelting");
@@ -28,7 +32,7 @@ public class AlloySmeltingRecipeCategory implements IRecipeCategory {
     private final IDrawable icon;
 
     public AlloySmeltingRecipeCategory(IGuiHelper helper) {
-        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 85);
+        this.background = helper.createDrawable(TEXTURE, 0, 0, 176, 75);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.SOLAR_ALLOY_SMELTER.asItem()));
     }
 
@@ -55,12 +59,12 @@ public class AlloySmeltingRecipeCategory implements IRecipeCategory {
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, Object recipe, IFocusGroup focuses) {
         AlloySmelterRecipe alloySmelterRecipe = (AlloySmelterRecipe) recipe;
-        builder.addSlot(mezz.jei.api.recipe.RecipeIngredientRole.INPUT, 56, 24)
-            .addIngredients(alloySmelterRecipe.getIngredients().get(0));
-        builder.addSlot(mezz.jei.api.recipe.RecipeIngredientRole.INPUT, 79, 17)
-            .addIngredients(alloySmelterRecipe.getIngredients().get(1));
-        builder.addSlot(mezz.jei.api.recipe.RecipeIngredientRole.INPUT, 102, 24)
-            .addIngredients(alloySmelterRecipe.getIngredients().get(2));
+        int[][] slotPositions = {{56, 24}, {79, 17}, {102, 24}};
+        List<SizedIngredient> inputs = alloySmelterRecipe.inputs();
+        for (int i = 0; i < inputs.size(); i++) {
+            builder.addSlot(mezz.jei.api.recipe.RecipeIngredientRole.INPUT, slotPositions[i][0], slotPositions[i][1])
+                .addItemStacks(Arrays.asList(inputs.get(i).getItems()));
+        }
         builder.addSlot(mezz.jei.api.recipe.RecipeIngredientRole.OUTPUT, 79, 58)
             .addItemStack(alloySmelterRecipe.getResultItem(null));
     }

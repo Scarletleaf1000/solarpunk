@@ -26,6 +26,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,14 +135,14 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
             return;
         }
 
-        int blastingSlot = getBlastingInputSlot();
-        if (blastingSlot != -1) {
-            Optional<RecipeHolder<BlastingRecipe>> blastingRecipe = getBlastingRecipe(blastingSlot);
-            if (blastingRecipe.isEmpty()) {
-                return;
+        List<Integer> blastingSlots = getBlastingInputSlots();
+        if (!blastingSlots.isEmpty()) {
+            ItemStack output = getBlastingRecipe(blastingSlots.get(0)).get().value()
+                    .getResultItem(this.level.registryAccess()).copy();
+            output.setCount(output.getCount() * blastingSlots.size());
+            for (int slot : blastingSlots) {
+                itemHandler.extractItem(slot, 1, false);
             }
-            ItemStack output = blastingRecipe.get().value().getResultItem(this.level.registryAccess());
-            itemHandler.extractItem(blastingSlot, 1, false);
             insertIntoOutput(output);
         }
     }
@@ -174,18 +175,15 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
             return true;
         }
 
-        int blastingSlot = getBlastingInputSlot();
-        if (blastingSlot != -1) {
-            Optional<RecipeHolder<BlastingRecipe>> blastingRecipe = getBlastingRecipe(blastingSlot);
-            if (blastingRecipe.isEmpty()) {
+        List<Integer> blastingSlots = getBlastingInputSlots();
+        if (!blastingSlots.isEmpty()) {
+            BlastingRecipe blastingRecipe = getBlastingRecipe(blastingSlots.get(0)).get().value();
+            ItemStack output = blastingRecipe.getResultItem(this.level.registryAccess());
+            if (!canInsertItemIntoOutputSlot(output)
+                    || !canInsertAmountIntoOutputSlot(output.getCount() * blastingSlots.size())) {
                 return false;
             }
-            ItemStack output = blastingRecipe.get().value().getResultItem(this.level.registryAccess());
-            if (output.isEmpty() || !canInsertItemIntoOutputSlot(output)
-                    || !canInsertAmountIntoOutputSlot(output.getCount())) {
-                return false;
-            }
-            this.maxProgress = blastingRecipe.get().value().getCookingTime() * TIME_MULTIPLIER;
+            this.maxProgress = blastingRecipe.getCookingTime() * TIME_MULTIPLIER;
             return true;
         }
 
@@ -205,13 +203,30 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
                 .map(RecipeHolder::value);
     }
 
-    private int getBlastingInputSlot() {
+    private List<Integer> getBlastingInputSlots() {
+        List<Integer> slots = new ArrayList<>();
+        ItemStack expectedOutput = ItemStack.EMPTY;
         for (int slot = INPUT_SLOT_1; slot <= INPUT_SLOT_3; slot++) {
-            if (!itemHandler.getStackInSlot(slot).isEmpty() && getBlastingRecipe(slot).isPresent()) {
-                return slot;
+            ItemStack stack = itemHandler.getStackInSlot(slot);
+            if (stack.isEmpty()) {
+                continue;
             }
+            Optional<RecipeHolder<BlastingRecipe>> recipe = getBlastingRecipe(slot);
+            if (recipe.isEmpty()) {
+                return List.of();
+            }
+            ItemStack output = recipe.get().value().getResultItem(this.level.registryAccess());
+            if (output.isEmpty()) {
+                return List.of();
+            }
+            if (expectedOutput.isEmpty()) {
+                expectedOutput = output;
+            } else if (!ItemStack.isSameItemSameComponents(expectedOutput, output)) {
+                return List.of();
+            }
+            slots.add(slot);
         }
-        return -1;
+        return slots;
     }
 
     private Optional<RecipeHolder<BlastingRecipe>> getBlastingRecipe(int slot) {

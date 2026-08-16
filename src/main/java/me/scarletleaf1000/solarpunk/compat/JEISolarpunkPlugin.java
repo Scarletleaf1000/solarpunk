@@ -1,16 +1,20 @@
 package me.scarletleaf1000.solarpunk.compat;
 
 import me.scarletleaf1000.solarpunk.Solarpunk;
+import me.scarletleaf1000.solarpunk.block.ModBlocks;
 import me.scarletleaf1000.solarpunk.recipe.ModRecipes;
 import me.scarletleaf1000.solarpunk.recipe.custom.AlloySmelterRecipe;
 import me.scarletleaf1000.solarpunk.screen.custom.SolarAlloySmelterScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -41,6 +45,13 @@ public class JEISolarpunkPlugin implements IModPlugin {
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
 
-        registration.addRecipeClickArea(SolarAlloySmelterScreen.class, 51, 32, 24, 33, AlloySmeltingRecipeCategory.ALLOY_SMELTING_RECIPE_TYPE);
+        registration.addRecipeClickArea(SolarAlloySmelterScreen.class, 65, 45, 8, 16, AlloySmeltingRecipeCategory.ALLOY_SMELTING_RECIPE_TYPE);
+    }
+
+    @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        ItemStack smelterStack = new ItemStack(ModBlocks.SOLAR_ALLOY_SMELTER.asItem());
+        registration.addRecipeCatalyst(smelterStack, RecipeTypes.BLASTING);
+        registration.addRecipeCatalyst(smelterStack, AlloySmeltingRecipeCategory.ALLOY_SMELTING_RECIPE_TYPE);
     }
 }
