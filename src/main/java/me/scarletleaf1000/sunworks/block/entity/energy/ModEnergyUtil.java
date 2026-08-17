@@ -19,30 +19,12 @@ public class ModEnergyUtil {
             return false;
         }
 
-        if(energyStorageHasEnergy(fromStorage, amount)) {
-            return false;
-        }
-
-        if(energyStorageFull(toStorage)) {
-            return false;
-        }
-
         int maxAmountToReceive = toStorage.receiveEnergy(amount, true);
 
         int extractedEnergy = fromStorage.extractEnergy(maxAmountToReceive, false);
         toStorage.receiveEnergy(extractedEnergy, false);
 
         return true;
-    }
-
-    private static boolean energyStorageFull(IEnergyStorage toStorage) {
-        // No more Energy to draw or cannot extract
-        return toStorage.getEnergyStored() >= toStorage.getMaxEnergyStored() || !toStorage.canReceive();
-    }
-
-    private static boolean energyStorageHasEnergy(IEnergyStorage fromStorage, int amount) {
-        // No more Space to receive or cannot receive
-        return fromStorage.getEnergyStored() <= 0 || fromStorage.getEnergyStored() < amount || !fromStorage.canExtract();
     }
 
     public static boolean doesBlockHaveEnergyStorage(BlockPos positionToCheck, Direction side, Level level) {
