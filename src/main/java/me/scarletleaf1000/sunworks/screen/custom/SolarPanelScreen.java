@@ -1,0 +1,76 @@
+package me.scarletleaf1000.sunworks.screen.custom;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import me.scarletleaf1000.sunworks.Sunworks;
+import me.scarletleaf1000.sunworks.screen.renderer.EnergyDisplayTooltipArea;
+import me.scarletleaf1000.sunworks.util.MouseUtil;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+
+import java.util.Optional;
+
+public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
+    private static final ResourceLocation GUI_TEXTURE =
+            ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID,"textures/gui/container/solar_panel.png");
+
+    private EnergyDisplayTooltipArea energyInfoArea;
+
+    public SolarPanelScreen(SolarPanelMenu menu, Inventory playerInventory, Component title) {
+        super(menu, playerInventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        assignEnergyInfoArea();
+    }
+
+    private void renderEnergyAreaTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int x, int y) {
+        if(isMouseAboveArea(pMouseX, pMouseY, x, y, 83, 11, 8, 64)) {
+            guiGraphics.renderTooltip(this.font, energyInfoArea.getTooltips(),
+                    Optional.empty(), pMouseX - x, pMouseY - y);
+        }
+    }
+
+    private void assignEnergyInfoArea() {
+        energyInfoArea = new EnergyDisplayTooltipArea(((width - imageWidth) / 2) + 83,
+                ((height - imageHeight) / 2) + 11, menu.blockEntity.getEnergyStorage(null));
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int pMouseX, int pMouseY) {
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        renderEnergyAreaTooltip(guiGraphics, pMouseX, pMouseY, x, y);
+    }
+
+    @Override
+    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+
+        energyInfoArea.render(guiGraphics);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+        renderBackground(guiGraphics, mouseX, mouseY, delta);
+        super.render(guiGraphics, mouseX, mouseY, delta);
+        renderTooltip(guiGraphics, mouseX, mouseY);
+    }
+
+    public static boolean isMouseAboveArea(int mouseX, int mouseY, int x, int y, int offsetX, int offsetY, int width, int height) {
+        return MouseUtil.isMouseOver(mouseX, mouseY, x + offsetX, y + offsetY, width, height);
+    }
+}

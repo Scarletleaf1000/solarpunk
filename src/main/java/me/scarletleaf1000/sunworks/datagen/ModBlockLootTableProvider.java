@@ -35,6 +35,7 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
         dropSelf(ModBlocks.RAW_SILVER_BLOCK.get());
         dropSelf(ModBlocks.ELECTRUM_BLOCK.get());
         dropSelf(ModBlocks.SOLAR_ALLOY_SMELTER.get());
+        dropSelf(ModBlocks.SOLAR_PANEL.get());
 
         add(ModBlocks.CINDERITE_ORE.get(), block -> createOreDrop(block, ModItems.RAW_CINDERITE.get()));
         add(ModBlocks.DEEPSLATE_CINDERITE_ORE.get(), block -> createOreDrop(block, ModItems.RAW_CINDERITE.get()));

@@ -2,8 +2,8 @@ package me.scarletleaf1000.sunworks.block;
 
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
-import me.scarletleaf1000.sunworks.block.custom.SolarAlloySmelterBlock;
-import me.scarletleaf1000.sunworks.block.custom.SolarPanelBlock;
+import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
+import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -82,7 +82,8 @@ public class ModBlocks {
             () -> new SolarPanelBlock(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)
                     .sound(SoundType.METAL)
-                    .requiresCorrectToolForDrops()));
+                    .requiresCorrectToolForDrops()
+            ));
 
     private static DeferredBlock<Block> registerOre(String name, boolean deepslate) {
         return registerBlock(name, () -> new Block(BlockBehaviour.Properties.of()

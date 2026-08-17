@@ -2,6 +2,7 @@ package me.scarletleaf1000.sunworks.screen;
 
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.screen.custom.SolarAlloySmelterMenu;
+import me.scarletleaf1000.sunworks.screen.custom.SolarPanelMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -17,6 +18,9 @@ public class ModMenuTypes {
 
     public static final DeferredHolder<MenuType<?>, MenuType<SolarAlloySmelterMenu>> SOLAR_ALLOY_SMELTER_MENU =
             registerMenuType("solar_alloy_smelter_menu", SolarAlloySmelterMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<SolarPanelMenu>> SOLAR_PANEL_MENU =
+            registerMenuType("solar_panel_menu", SolarPanelMenu::new);
+
 
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name,
                                                                                                                IContainerFactory<T> factory) {

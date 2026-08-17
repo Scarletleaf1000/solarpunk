@@ -1,7 +1,7 @@
 package me.scarletleaf1000.sunworks.screen.custom;
 
 import me.scarletleaf1000.sunworks.block.ModBlocks;
-import me.scarletleaf1000.sunworks.block.entity.custom.SolarAlloySmelterBlockEntity;
+import me.scarletleaf1000.sunworks.block.entity.custom.processor.SolarAlloySmelterBlockEntity;
 import me.scarletleaf1000.sunworks.screen.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;

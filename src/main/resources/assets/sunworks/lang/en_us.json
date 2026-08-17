@@ -26,8 +26,10 @@
   "block.sunworks.silver_block": "Block of Silver",
   "block.sunworks.electrum_block": "Block of Electrum",
   "block.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+  "block.sunworks.solar_panel": "Solar Panel",
 
   "block.menu.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+  "block.menu.sunworks.solar_panel": "Solar Panel",
 
   "recipe.sunworks.alloy_smelting": "Alloy Smelting",
 

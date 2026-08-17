@@ -61,6 +61,7 @@ public class ModCreativeModeTabs {
                        output.accept(ModBlocks.ELECTRUM_BLOCK);
 
                        output.accept(ModBlocks.SOLAR_ALLOY_SMELTER);
+                       output.accept(ModBlocks.SOLAR_PANEL);
                     }).build());
 
     public static void register(IEventBus eventBus) {

@@ -1,13 +1,20 @@
-package me.scarletleaf1000.sunworks.block.custom;
+package me.scarletleaf1000.sunworks.block.custom.generator;
 
 import com.mojang.serialization.MapCodec;
-import me.scarletleaf1000.sunworks.block.entity.custom.SolarPanelBlockEntity;
+import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
+import me.scarletleaf1000.sunworks.block.entity.custom.generator.SolarPanelBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -25,7 +32,7 @@ public class SolarPanelBlock extends BaseEntityBlock {
             Block.box(5, 6, 5, 11, 7, 11)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get(), BooleanOp.OR);
 
-    protected SolarPanelBlock(Properties properties) {
+    public SolarPanelBlock(Properties properties) {
         super(properties);
     }
 
@@ -47,5 +54,27 @@ public class SolarPanelBlock extends BaseEntityBlock {
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide()) {
+            BlockEntity entity = level.getBlockEntity(pos);
+            if (entity instanceof SolarPanelBlockEntity solarPanelBlockEntity) {
+                player.openMenu(solarPanelBlockEntity, pos);
+            } else {
+                throw new IllegalStateException("Solar panel container provider is missing!");
+            }
+        }
+
+        return InteractionResult.sidedSuccess(level.isClientSide());
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide) return null;
+
+        return createTickerHelper(blockEntityType, ModBlockEntities.SOLAR_PANEL_BE.get(),
+                (level1, pos, state1, blockEntity) -> blockEntity.tick(level1, pos, state1));
     }
 }

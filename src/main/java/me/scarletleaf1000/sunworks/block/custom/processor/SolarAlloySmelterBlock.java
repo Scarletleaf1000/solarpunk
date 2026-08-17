@@ -1,8 +1,8 @@
-package me.scarletleaf1000.sunworks.block.custom;
+package me.scarletleaf1000.sunworks.block.custom.processor;
 
 import com.mojang.serialization.MapCodec;
 import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
-import me.scarletleaf1000.sunworks.block.entity.custom.SolarAlloySmelterBlockEntity;
+import me.scarletleaf1000.sunworks.block.entity.custom.processor.SolarAlloySmelterBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
