@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "sunworks:block/solar_panel"
+    }
+  }
+}
