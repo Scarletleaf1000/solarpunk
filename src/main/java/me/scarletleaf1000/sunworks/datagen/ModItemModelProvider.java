@@ -28,6 +28,8 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.ELECTRUM_NUGGET.get());
         basicItem(ModItems.SILICON.get());
 
+        withExistingParent(ModBlocks.SOLAR_PANEL.getId().getPath(), modLoc("block/simple_solar_panel"));
+
         clusterItem(ModBlocks.HELIOLITE_CLUSTER);
         clusterItem(ModBlocks.LARGE_HELIOLITE_BUD);
         clusterItem(ModBlocks.MEDIUM_HELIOLITE_BUD);

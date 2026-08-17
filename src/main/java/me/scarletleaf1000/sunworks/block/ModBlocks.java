@@ -3,6 +3,7 @@ package me.scarletleaf1000.sunworks.block;
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
 import me.scarletleaf1000.sunworks.block.custom.SolarAlloySmelterBlock;
+import me.scarletleaf1000.sunworks.block.custom.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -74,6 +75,11 @@ public class ModBlocks {
 
     public static final DeferredBlock<Block> SOLAR_ALLOY_SMELTER = registerBlock("solar_alloy_smelter",
             () -> new SolarAlloySmelterBlock(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()));
+    public static final DeferredBlock<Block> SOLAR_PANEL = registerBlock("solar_panel",
+            () -> new SolarPanelBlock(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()));
