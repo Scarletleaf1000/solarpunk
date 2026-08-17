@@ -26,6 +26,7 @@ public class ModItemModelProvider extends ItemModelProvider {
         basicItem(ModItems.SILVER_NUGGET.get());
         basicItem(ModItems.ELECTRUM_INGOT.get());
         basicItem(ModItems.ELECTRUM_NUGGET.get());
+        basicItem(ModItems.SILICON.get());
 
         clusterItem(ModBlocks.HELIOLITE_CLUSTER);
         clusterItem(ModBlocks.LARGE_HELIOLITE_BUD);
