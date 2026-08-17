@@ -1,0 +1,36 @@
+{
+  "item.sunworks.heliolite_shard": "Heliolite Shard",
+  "item.sunworks.cinderite_ingot": "Cinderite Ingot",
+  "item.sunworks.raw_cinderite": "Raw Cinderite",
+  "item.sunworks.silver_ingot": "Silver Ingot",
+  "item.sunworks.raw_silver": "Raw Silver",
+  "item.sunworks.cinderite_nugget": "Cinderite Nugget",
+  "item.sunworks.silver_nugget": "Silver Nugget",
+  "item.sunworks.electrum_ingot": "Electrum Ingot",
+  "item.sunworks.electrum_nugget": "Electrum Nugget",
+  "item.sunworks.silicon": "Electrum Nugget",
+
+  "block.sunworks.heliolite_block": "Heliolite Block",
+  "block.sunworks.budding_heliolite": "Budding Heliolite Block",
+  "block.sunworks.heliolite_cluster": "Heliolite Cluster",
+  "block.sunworks.large_heliolite_bud": "Large Heliolite Bud",
+  "block.sunworks.medium_heliolite_bud": "Medium Heliolite Bud",
+  "block.sunworks.small_heliolite_bud": "Small Heliolite Bud",
+  "block.sunworks.cinderite_ore": "Cinderite Ore",
+  "block.sunworks.deepslate_cinderite_ore": "Deepslate Cinderite Ore",
+  "block.sunworks.raw_cinderite_block": "Block of Raw Cinderite",
+  "block.sunworks.cinderite_block": "Block of Cinderite",
+  "block.sunworks.silver_ore": "Silver Ore",
+  "block.sunworks.deepslate_silver_ore": "Deepslate Silver Ore",
+  "block.sunworks.raw_silver_block": "Block of Raw Silver",
+  "block.sunworks.silver_block": "Block of Silver",
+  "block.sunworks.electrum_block": "Block of Electrum",
+  "block.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+
+  "block.menu.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+
+  "recipe.sunworks.alloy_smelting": "Alloy Smelting",
+
+  "itemGroup.sunworks.item_tab": "Sunworks Items",
+  "itemGroup.sunworks.block_tab": "Sunworks Blocks"
+}
