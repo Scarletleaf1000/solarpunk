@@ -36,7 +36,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.RAW_SILVER_BLOCK);
         blockWithItem(ModBlocks.ELECTRUM_BLOCK);
 
-        horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true);
+        horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true, true);
 
         clusterBlock(ModBlocks.HELIOLITE_CLUSTER);
         clusterBlock(ModBlocks.LARGE_HELIOLITE_BUD);
@@ -60,15 +60,24 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private void horizontalFaceBlock(DeferredBlock<Block> block, boolean hasOnOffTexture) {
+        horizontalFaceBlock(block, hasOnOffTexture, false);
+    }
+
+    private void horizontalFaceBlock(DeferredBlock<Block> block, boolean hasOnOffTexture, boolean hasBottomTexture) {
         String name = block.getId().getPath();
         ResourceLocation side = modLoc("block/" + name + "_side");
         ResourceLocation front = modLoc("block/" + name + "_front");
         ResourceLocation top = modLoc("block/" + name + "_top");
+        ResourceLocation bottom = hasBottomTexture ? modLoc("block/" + name + "_bottom") : top;
 
-        ModelFile offModel = models().orientable(name, side, front, top);
-        ModelFile onModel = hasOnOffTexture
-                ? models().orientable(name + "_on", side, modLoc("block/" + name + "_front_on"), top)
-                : offModel;
+        ModelFile offModel = hasBottomTexture
+                ? models().orientableWithBottom(name, side, front, bottom, top)
+                : models().orientable(name, side, front, top);
+        ModelFile onModel = !hasOnOffTexture
+                ? offModel
+                : hasBottomTexture
+                        ? models().orientableWithBottom(name + "_on", side, modLoc("block/" + name + "_front_on"), bottom, top)
+                        : models().orientable(name + "_on", side, modLoc("block/" + name + "_front_on"), top);
 
         getVariantBuilder(block.get()).forAllStates(state -> {
             ModelFile model = hasOnOffTexture && state.getValue(BlockStateProperties.LIT) ? onModel : offModel;
