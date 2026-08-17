@@ -20,6 +20,18 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
+    exclusiveContent {//mekanism for testing purposes
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        // forRepositories(fg.repository) // Uncomment when using ForgeGradle
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    } //mekanism for testing purposes
 }
 
 base {
@@ -131,6 +143,8 @@ dependencies {
     compileOnly("mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}")
     // at runtime, use the full JEI jar for NeoForge
     runtimeOnly("mezz.jei:jei-${mc_version}-neoforge:${jei_version}")
+
+    implementation "maven.modrinth:Ce6I4WUE:5KzzycBT" //mekanism for testing purposes
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
