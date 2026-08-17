@@ -28,6 +28,8 @@ public class ModItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> ELECTRUM_NUGGET = ITEMS.registerItem("electrum_nugget",
             Item::new, new Item.Properties());
+    public static final DeferredItem<Item> SILICON = ITEMS.registerItem("silicon",
+            Item::new, new Item.Properties());
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

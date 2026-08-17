@@ -22,16 +22,17 @@ public class ModCreativeModeTabs {
                     .title(Component.translatable("itemGroup.solarpunk.item_tab"))
                     .icon(() -> new ItemStack(ModItems.HELIOLITE_SHARD.get()))
                     //.withSearchBar()
-                    .displayItems((pParameters, pOutput) -> {
-                        pOutput.accept(ModItems.HELIOLITE_SHARD);
-                        pOutput.accept(ModItems.CINDERITE_INGOT);
-                        pOutput.accept(ModItems.CINDERITE_NUGGET);
-                        pOutput.accept(ModItems.RAW_CINDERITE);
-                        pOutput.accept(ModItems.SILVER_INGOT);
-                        pOutput.accept(ModItems.SILVER_NUGGET);
-                        pOutput.accept(ModItems.RAW_SILVER);
-                        pOutput.accept(ModItems.ELECTRUM_INGOT);
-                        pOutput.accept(ModItems.ELECTRUM_NUGGET);
+                    .displayItems((parameters, output) -> {
+                        output.accept(ModItems.HELIOLITE_SHARD);
+                        output.accept(ModItems.CINDERITE_INGOT);
+                        output.accept(ModItems.CINDERITE_NUGGET);
+                        output.accept(ModItems.RAW_CINDERITE);
+                        output.accept(ModItems.SILVER_INGOT);
+                        output.accept(ModItems.SILVER_NUGGET);
+                        output.accept(ModItems.RAW_SILVER);
+                        output.accept(ModItems.ELECTRUM_INGOT);
+                        output.accept(ModItems.ELECTRUM_NUGGET);
+                        output.accept(ModItems.SILICON);
 
                     }).build());
 
