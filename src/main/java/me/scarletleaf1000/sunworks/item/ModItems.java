@@ -30,6 +30,10 @@ public class ModItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SILICON = ITEMS.registerItem("silicon",
             Item::new, new Item.Properties());
+    public static final DeferredItem<Item> HEAT_CORE = ITEMS.registerItem("heat_core",
+            Item::new, new Item.Properties());
+    public static final DeferredItem<Item> SOLAR_PANEL_COMPONENT = ITEMS.registerItem("solar_panel_component",
+            Item::new, new Item.Properties());
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

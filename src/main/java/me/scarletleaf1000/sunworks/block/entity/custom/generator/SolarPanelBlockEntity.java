@@ -53,7 +53,7 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void pushEnergyToNeighborsBelow() {
-        if (ModEnergyUtil.doesBlockHaveEnergyStorage(this.worldPosition.below(), this.level)) {
+        if (ModEnergyUtil.doesBlockHaveEnergyStorage(this.worldPosition.below(), Direction.UP, this.level)) {
             ModEnergyUtil.move(this.worldPosition, this.worldPosition.below(), MAX_TRANSFER, this.level);
         }
     }

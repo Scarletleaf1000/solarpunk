@@ -33,6 +33,8 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.ELECTRUM_INGOT);
                         output.accept(ModItems.ELECTRUM_NUGGET);
                         output.accept(ModItems.SILICON);
+                        output.accept(ModItems.HEAT_CORE);
+                        output.accept(ModItems.SOLAR_PANEL_COMPONENT);
 
                     }).build());
 

@@ -9,6 +9,8 @@
   "item.sunworks.electrum_ingot": "Electrum Ingot",
   "item.sunworks.electrum_nugget": "Electrum Nugget",
   "item.sunworks.silicon": "Silicon",
+  "item.sunworks.heat_core": "Heat Core",
+  "item.sunworks.solar_panel_component": "Solar Panel Component",
 
   "block.sunworks.heliolite_block": "Heliolite Block",
   "block.sunworks.budding_heliolite": "Budding Heliolite Block",

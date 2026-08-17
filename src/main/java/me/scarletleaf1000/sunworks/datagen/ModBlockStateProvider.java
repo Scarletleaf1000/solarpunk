@@ -38,6 +38,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true, true);
 
+        simpleBlock(ModBlocks.SOLAR_PANEL.get(), models().getExistingFile(modLoc("block/solar_panel")));
+
         clusterBlock(ModBlocks.HELIOLITE_CLUSTER);
         clusterBlock(ModBlocks.LARGE_HELIOLITE_BUD);
         clusterBlock(ModBlocks.MEDIUM_HELIOLITE_BUD);

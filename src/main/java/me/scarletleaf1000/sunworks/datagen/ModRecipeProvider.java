@@ -73,6 +73,47 @@ public class ModRecipeProvider extends RecipeProvider {
                 ModItems.RAW_SILVER.get());
         oreSmeltingRecipes(recipeOutput, silverSmeltables, ModItems.SILVER_INGOT.get());
         oreBlastingRecipes(recipeOutput, silverSmeltables, ModItems.SILVER_INGOT.get());
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.HEAT_CORE.get())
+                .pattern(" H ")
+                .pattern("HCH")
+                .pattern(" H ")
+                .define('H', ModItems.HELIOLITE_SHARD.get())
+                .define('C', ModItems.CINDERITE_NUGGET.get())
+                .unlockedBy("has_heliolite_shard", has(ModItems.HELIOLITE_SHARD.get()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SOLAR_PANEL_COMPONENT.get(), 3)
+                .pattern("SSS")
+                .pattern("IHI")
+                .define('S', ModItems.SILVER_INGOT.get())
+                .define('I', Items.IRON_INGOT)
+                .define('H', ModItems.HEAT_CORE.get())
+                .unlockedBy("has_heat_core", has(ModItems.HEAT_CORE.get()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_ALLOY_SMELTER.get())
+                .pattern("SPS")
+                .pattern("IBI")
+                .pattern("ICI")
+                .define('S', ModItems.SILVER_INGOT.get())
+                .define('P', ModItems.SOLAR_PANEL_COMPONENT.get())
+                .define('I', Items.IRON_BLOCK)
+                .define('B', Items.BLAST_FURNACE)
+                .define('C', ModItems.HEAT_CORE.get())
+                .unlockedBy("has_solar_panel_component", has(ModItems.SOLAR_PANEL_COMPONENT.get()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL.get())
+                .pattern("PPP")
+                .pattern("iIi")
+                .pattern(" e ")
+                .define('P', ModItems.SOLAR_PANEL_COMPONENT.get())
+                .define('i', Items.IRON_INGOT)
+                .define('I', Items.IRON_BLOCK)
+                .define('e', ModItems.ELECTRUM_INGOT.get())
+                .unlockedBy("has_solar_panel_component", has(ModItems.SOLAR_PANEL_COMPONENT.get()))
+                .save(recipeOutput);
     }
 
     protected static void oreSmeltingRecipes(RecipeOutput output, List<ItemLike> inputs, ItemLike result) {

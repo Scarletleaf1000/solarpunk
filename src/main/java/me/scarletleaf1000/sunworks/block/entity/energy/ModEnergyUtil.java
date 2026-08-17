@@ -1,14 +1,23 @@
 package me.scarletleaf1000.sunworks.block.entity.energy;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class ModEnergyUtil {
     public static boolean move(BlockPos from, BlockPos to, int amount, Level level) {
-        IEnergyStorage fromStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, from, null);
-        IEnergyStorage toStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, to, null);
+        Direction direction = Direction.fromDelta(
+                to.getX() - from.getX(), to.getY() - from.getY(), to.getZ() - from.getZ());
+
+        IEnergyStorage fromStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, from, direction);
+        IEnergyStorage toStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, to,
+                direction != null ? direction.getOpposite() : null);
+
+        if (fromStorage == null || toStorage == null) {
+            return false;
+        }
 
         if(energyStorageHasEnergy(fromStorage, amount)) {
             return false;
@@ -36,8 +45,8 @@ public class ModEnergyUtil {
         return fromStorage.getEnergyStored() <= 0 || fromStorage.getEnergyStored() < amount || !fromStorage.canExtract();
     }
 
-    public static boolean doesBlockHaveEnergyStorage(BlockPos positionToCheck, Level level) {
+    public static boolean doesBlockHaveEnergyStorage(BlockPos positionToCheck, Direction side, Level level) {
         return level.getBlockEntity(positionToCheck) != null
-                && level.getCapability(Capabilities.EnergyStorage.BLOCK, positionToCheck, null) != null;
+                && level.getCapability(Capabilities.EnergyStorage.BLOCK, positionToCheck, side) != null;
     }
 }
