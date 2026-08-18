@@ -8,6 +8,8 @@ import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeExtractorBlock;
 import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
+import me.scarletleaf1000.sunworks.item.custom.DescriptiveBlockItem;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.AmethystClusterBlock;
@@ -21,6 +23,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ModBlocks {
@@ -82,13 +85,18 @@ public class ModBlocks {
             () -> new SolarAlloySmelterBlock(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)
                     .sound(SoundType.METAL)
-                    .requiresCorrectToolForDrops()));
+                    .requiresCorrectToolForDrops()),
+            block -> new DescriptiveBlockItem(block, new Item.Properties(),
+                    Component.translatable("tooltip.sunworks.solar_alloy_smelter.description")));
     public static final DeferredBlock<Block> SOLAR_PANEL = registerBlock("solar_panel",
             () -> new SolarPanelBlock(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
-            ));
+            ),
+            block -> new DescriptiveBlockItem(block, new Item.Properties(),
+                    Component.translatable("tooltip.sunworks.solar_panel.power_transfer"),
+                    Component.translatable("tooltip.sunworks.solar_panel.energy_storage")));
 
     public static final Map<CableTier, DeferredBlock<EnergyPipeBlock>> ENERGY_PIPES = new EnumMap<>(CableTier.class);
     public static final Map<CableTier, DeferredBlock<EnergyPipeExtractorBlock>> ENERGY_PIPE_EXTRACTORS = new EnumMap<>(CableTier.class);
@@ -109,7 +117,8 @@ public class ModBlocks {
                         .sound(SoundType.METAL)
                         .noOcclusion(),
                 tier, () -> ENERGY_PIPE_EXTRACTORS.get(tier).get()));
-        registerBlockItem(plainName, plain);
+        ModItems.ITEMS.register(plainName, () -> new DescriptiveBlockItem(plain.get(), new Item.Properties(),
+                Component.translatable("tooltip.sunworks.power_transfer_rate", tier.getMaxTransfer())));
 
         DeferredBlock<EnergyPipeExtractorBlock> extractor = BLOCKS.register(extractorName, () -> new EnergyPipeExtractorBlock(
                 BlockBehaviour.Properties.of()
@@ -144,6 +153,12 @@ public class ModBlocks {
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
         registerBlockItem(name, toReturn);
+        return toReturn;
+    }
+
+    private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block, Function<T, ? extends BlockItem> itemFactory) {
+        DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+        ModItems.ITEMS.register(name, () -> itemFactory.apply(toReturn.get()));
         return toReturn;
     }
 

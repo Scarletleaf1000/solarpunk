@@ -32,6 +32,10 @@
 
   "block.sunworks.energy_pipe_basic": "Basic Energy Pipe",
   "block.sunworks.energy_pipe_basic_extractor": "Basic Energy Pipe (Extracting)",
+  "block.sunworks.energy_pipe_standard": "Standard Energy Pipe",
+  "block.sunworks.energy_pipe_standard_extractor": "Standard Energy Pipe (Extracting)",
+  "block.sunworks.energy_pipe_advanced": "Advanced Energy Pipe",
+  "block.sunworks.energy_pipe_advanced_extractor": "Advanced Energy Pipe (Extracting)",
 
   "block.menu.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
   "block.menu.sunworks.solar_panel": "Solar Panel",
@@ -39,5 +43,11 @@
   "recipe.sunworks.alloy_smelting": "Alloy Smelting",
 
   "itemGroup.sunworks.item_tab": "Sunworks Items",
-  "itemGroup.sunworks.block_tab": "Sunworks Blocks"
+  "itemGroup.sunworks.block_tab": "Sunworks Blocks",
+
+  "tooltip.sunworks.hold_shift": "Hold SHIFT for details",
+  "tooltip.sunworks.power_transfer_rate": "Power Transfer Rate: %s FE/t",
+  "tooltip.sunworks.solar_panel.power_transfer": "Power Transfer Rate: 60 FE/t",
+  "tooltip.sunworks.solar_panel.energy_storage": "Energy Storage: 16000 FE",
+  "tooltip.sunworks.solar_alloy_smelter.description": "Combines heat cores and raw materials to create alloys."
 }

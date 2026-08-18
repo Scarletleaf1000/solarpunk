@@ -1,7 +1,9 @@
 package me.scarletleaf1000.sunworks.block.custom.cable;
 
 public enum CableTier {
-    BASIC("basic", "simple_power_cable", 60);
+    BASIC("basic", "simple_power_cable", 256),
+    STANDARD("standard", "standard_power_cable", 1024),
+    ADVANCED("advanced", "advanced_power_cable", 16384);
 
     private final String name;
     private final String textureName;
