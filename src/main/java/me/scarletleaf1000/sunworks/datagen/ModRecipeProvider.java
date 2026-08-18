@@ -1,6 +1,7 @@
 package me.scarletleaf1000.sunworks.datagen;
 
 import me.scarletleaf1000.sunworks.block.ModBlocks;
+import me.scarletleaf1000.sunworks.block.custom.cable.CableTier;
 import me.scarletleaf1000.sunworks.item.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -102,6 +103,13 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('B', Items.BLAST_FURNACE)
                 .define('C', ModItems.HEAT_CORE.get())
                 .unlockedBy("has_solar_panel_component", has(ModItems.SOLAR_PANEL_COMPONENT.get()))
+                .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ENERGY_PIPES.get(CableTier.BASIC).get(), 8)
+                .pattern("RER")
+                .define('R', Items.REDSTONE)
+                .define('E', ModItems.ELECTRUM_INGOT.get())
+                .unlockedBy("has_electrum_ingot", has(ModItems.ELECTRUM_INGOT.get()))
                 .save(recipeOutput);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.SOLAR_PANEL.get())

@@ -83,6 +83,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     private PipeVariant buildPipeVariant(CableTier tier, String variant, ResourceLocation texture) {
         ModelFile core = models().getBuilder(pipeModelName(tier, variant + "_core"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
@@ -92,6 +93,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile arm = models().getBuilder(pipeModelName(tier, variant + "_arm"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
@@ -103,6 +105,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile panel = models().getBuilder(pipeModelName(tier, variant + "_panel"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType("cutout")
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
