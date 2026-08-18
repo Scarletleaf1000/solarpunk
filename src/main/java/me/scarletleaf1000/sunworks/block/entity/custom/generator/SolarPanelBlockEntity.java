@@ -42,8 +42,40 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
         };
     }
 
+    private final IEnergyStorage EXTRACT_ONLY_STORAGE = new IEnergyStorage() {
+        @Override
+        public int receiveEnergy(int maxReceive, boolean simulate) {
+            return 0;
+        }
+
+        @Override
+        public int extractEnergy(int maxExtract, boolean simulate) {
+            return ENERGY_STORAGE.extractEnergy(maxExtract, simulate);
+        }
+
+        @Override
+        public int getEnergyStored() {
+            return ENERGY_STORAGE.getEnergyStored();
+        }
+
+        @Override
+        public int getMaxEnergyStored() {
+            return ENERGY_STORAGE.getMaxEnergyStored();
+        }
+
+        @Override
+        public boolean canExtract() {
+            return ENERGY_STORAGE.canExtract();
+        }
+
+        @Override
+        public boolean canReceive() {
+            return false;
+        }
+    };
+
     public IEnergyStorage getEnergyStorage(@Nullable Direction direction) {
-        return this.ENERGY_STORAGE;
+        return this.EXTRACT_ONLY_STORAGE;
     }
 
     public void tick(Level level, BlockPos pos, BlockState state) {
