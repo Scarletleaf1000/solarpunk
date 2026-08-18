@@ -98,9 +98,10 @@ public class ModBlockStateProvider extends BlockStateProvider {
                 .texture("particle", texture)
                 .element()
                     .from(5, 11, 5).to(11, 16, 11)
-                    .allFaces((direction, face) -> face.uvs(0f, 0f, 5f, 6f)
-                            .rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90)
-                            .texture("#texture"))
+                    .face(Direction.NORTH).uvs(0f, 0f, 5f, 6f).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).texture("#texture").end()
+                    .face(Direction.SOUTH).uvs(0f, 0f, 5f, 6f).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).texture("#texture").end()
+                    .face(Direction.EAST).uvs(0f, 0f, 5f, 6f).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).texture("#texture").end()
+                    .face(Direction.WEST).uvs(0f, 0f, 5f, 6f).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).texture("#texture").end()
                 .end();
 
         ModelFile panel = models().getBuilder(pipeModelName(tier, variant + "_panel"))
