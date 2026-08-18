@@ -68,8 +68,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
         for (CableTier tier : CableTier.values()) {
             this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                    .add(ModBlocks.ENERGY_PIPES.get(tier).get())
-                    .add(ModBlocks.ENERGY_PIPE_EXTRACTORS.get(tier).get());
+                    .add(ModBlocks.ENERGY_PIPES.get(tier).get());
         }
 
         this.tag(Tags.Blocks.ORES)

@@ -40,8 +40,6 @@ public class ModBlockLootTableProvider extends BlockLootSubProvider {
 
         for (CableTier tier : CableTier.values()) {
             dropSelf(ModBlocks.ENERGY_PIPES.get(tier).get());
-            add(ModBlocks.ENERGY_PIPE_EXTRACTORS.get(tier).get(),
-                    block -> createSingleItemTable(ModBlocks.ENERGY_PIPES.get(tier).get().asItem()));
         }
 
         add(ModBlocks.CINDERITE_ORE.get(), block -> createOreDrop(block, ModItems.RAW_CINDERITE.get()));

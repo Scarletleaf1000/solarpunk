@@ -2,7 +2,6 @@ package me.scarletleaf1000.sunworks.block.entity;
 
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.ModBlocks;
-import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeExtractorBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.block.entity.custom.cable.EnergyPipeBlockEntity;
 import me.scarletleaf1000.sunworks.block.entity.custom.generator.SolarPanelBlockEntity;
@@ -30,7 +29,7 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<EnergyPipeBlockEntity>> ENERGY_PIPE_BE =
             BLOCK_ENTITIES.register("energy_pipe_be", () -> BlockEntityType.Builder.of(
                     EnergyPipeBlockEntity::new,
-                    ModBlocks.ENERGY_PIPE_EXTRACTORS.values().stream()
+                    ModBlocks.ENERGY_PIPES.values().stream()
                             .map(deferredBlock -> (Block) deferredBlock.get())
                             .toArray(Block[]::new)).build(null));
 

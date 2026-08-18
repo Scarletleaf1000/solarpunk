@@ -20,7 +20,9 @@ public class DescriptiveBlockItem extends BlockItem {
 
     public DescriptiveBlockItem(Block block, Properties properties, Component... description) {
         super(block, properties);
-        this.description = List.of(description);
+        this.description = List.of(description).stream()
+                .<Component>map(component -> component.copy().withStyle(ChatFormatting.GRAY))
+                .toList();
     }
 
     @Override

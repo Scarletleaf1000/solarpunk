@@ -1,37 +1,37 @@
 package me.scarletleaf1000.sunworks.block.custom.cable;
 
+import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
+import me.scarletleaf1000.sunworks.block.entity.custom.cable.EnergyPipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Supplier;
-
 /**
- * The plain, block-entity-free energy pipe. The vast majority of a network should be made up
- * of this block, since it has zero tick overhead.
+ * An energy pipe segment. Every segment carries a {@link EnergyPipeBlockEntity} so that any
+ * side can be individually toggled between a normal (output) and extracting (input)
+ * connection - see {@link AbstractPipeBlock#useWithoutItem}.
  */
-public class EnergyPipeBlock extends AbstractPipeBlock {
-    private final Supplier<EnergyPipeExtractorBlock> extractorVariant;
-
-    public EnergyPipeBlock(Properties properties, CableTier tier, Supplier<EnergyPipeExtractorBlock> extractorVariant) {
+public class EnergyPipeBlock extends AbstractPipeBlock implements EntityBlock {
+    public EnergyPipeBlock(Properties properties, CableTier tier) {
         super(properties, tier);
-        this.extractorVariant = extractorVariant;
     }
 
     @Override
-    protected boolean isExtractor() {
-        return false;
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new EnergyPipeBlockEntity(pos, state);
     }
 
     @Override
-    protected @Nullable BlockState toggleExtracting(Level level, BlockPos pos, BlockState state) {
-        if (!hasEnergyConnectableNeighbor(level, pos)) {
-            return null;
-        }
+    @SuppressWarnings("unchecked")
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        if (level.isClientSide || blockEntityType != ModBlockEntities.ENERGY_PIPE_BE.get()) return null;
 
-        EnergyPipeExtractorBlock extractor = extractorVariant.get();
-        BlockState newState = extractor.defaultBlockState();
-        return extractor.recomputeAllConnections(level, pos, newState);
+        return (BlockEntityTicker<T>) (BlockEntityTicker<EnergyPipeBlockEntity>)
+                (level1, pos, state1, blockEntity) -> blockEntity.tick(level1, pos, state1);
     }
 }

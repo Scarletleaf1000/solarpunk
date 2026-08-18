@@ -53,12 +53,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         for (CableTier tier : CableTier.values()) {
             PipeModels models = pipeModels(tier);
-            pipeBlockState(ModBlocks.ENERGY_PIPES.get(tier).get(), models, true);
-            pipeBlockState(ModBlocks.ENERGY_PIPE_EXTRACTORS.get(tier).get(), models, false);
+            pipeBlockState(ModBlocks.ENERGY_PIPES.get(tier).get(), models);
         }
     }
 
-    private record PipeVariant(ModelFile core, ModelFile arm, ModelFile panel) {
+    private record PipeVariant(ModelFile coreFace, ModelFile coreItem, ModelFile arm, ModelFile panel) {
     }
 
     private record PipeModels(PipeVariant unpowered, PipeVariant powered) {
@@ -81,9 +80,27 @@ public class ModBlockStateProvider extends BlockStateProvider {
     }
 
     private PipeVariant buildPipeVariant(CableTier tier, String variant, ResourceLocation texture) {
-        ModelFile core = models().getBuilder(pipeModelName(tier, variant + "_core"))
+        String renderType = variant.equals("powered") ? "translucent" : "cutout";
+
+        // Only ever a single face of the 6x6x6 core cube, built facing UP by default and
+        // reused via rotation (like the arm/panel below). It is only shown per-direction when
+        // that side has no pipe/extract connection - once an arm covers a side, the matching
+        // core face is entirely hidden geometry, so we skip rendering it to avoid the arm's
+        // transparent regions revealing the core bleeding through underneath.
+        ModelFile coreFace = models().getBuilder(pipeModelName(tier, variant + "_core_face"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
-                .renderType("cutout")
+                .renderType(renderType)
+                .texture("texture", texture)
+                .texture("particle", texture)
+                .element()
+                    .from(5, 5, 5).to(11, 11, 11)
+                    .face(Direction.UP).uvs(10f, 0f, 16f, 6f).texture("#texture").end()
+                .end();
+
+        // Only used for the item icon, which needs the full cube rather than a single face.
+        ModelFile coreItem = models().getBuilder(pipeModelName(tier, variant + "_core_item"))
+                .parent(models().getExistingFile(mcLoc("block/block")))
+                .renderType(renderType)
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
@@ -93,7 +110,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile arm = models().getBuilder(pipeModelName(tier, variant + "_arm"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
-                .renderType("cutout")
+                .renderType(renderType)
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
@@ -106,7 +123,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
         ModelFile panel = models().getBuilder(pipeModelName(tier, variant + "_panel"))
                 .parent(models().getExistingFile(mcLoc("block/block")))
-                .renderType("cutout")
+                .renderType(renderType)
                 .texture("texture", texture)
                 .texture("particle", texture)
                 .element()
@@ -119,16 +136,14 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .face(Direction.WEST).uvs(8f, 6f, 9f, 14f).rotation(ModelBuilder.FaceRotation.COUNTERCLOCKWISE_90).texture("#texture").end()
                 .end();
 
-        return new PipeVariant(core, arm, panel);
+        return new PipeVariant(coreFace, coreItem, arm, panel);
     }
 
-    private void pipeBlockState(Block block, PipeModels pipeModels, boolean hasItem) {
+    private void pipeBlockState(Block block, PipeModels pipeModels) {
         PipeVariant unpowered = pipeModels.unpowered();
         PipeVariant powered = pipeModels.powered();
 
         MultiPartBlockStateBuilder builder = getMultipartBuilder(block);
-        builder.part().modelFile(unpowered.core()).addModel().condition(AbstractPipeBlock.POWERED, false);
-        builder.part().modelFile(powered.core()).addModel().condition(AbstractPipeBlock.POWERED, true);
 
         for (Direction direction : Direction.values()) {
             int x = direction == Direction.DOWN ? 180 : direction.getAxis().isHorizontal() ? 90 : 0;
@@ -140,6 +155,13 @@ public class ModBlockStateProvider extends BlockStateProvider {
             };
 
             EnumProperty<PipeConnection> property = AbstractPipeBlock.PROPERTY_BY_DIRECTION.get(direction);
+
+            builder.part().modelFile(unpowered.coreFace()).rotationX(x).rotationY(y).addModel()
+                    .condition(property, PipeConnection.NONE)
+                    .condition(AbstractPipeBlock.POWERED, false);
+            builder.part().modelFile(powered.coreFace()).rotationX(x).rotationY(y).addModel()
+                    .condition(property, PipeConnection.NONE)
+                    .condition(AbstractPipeBlock.POWERED, true);
 
             builder.part().modelFile(unpowered.arm()).rotationX(x).rotationY(y).addModel()
                     .condition(property, PipeConnection.PIPE, PipeConnection.EXTRACT)
@@ -156,9 +178,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .condition(AbstractPipeBlock.POWERED, true);
         }
 
-        if (hasItem) {
-            simpleBlockItem(block, unpowered.core());
-        }
+        simpleBlockItem(block, unpowered.coreItem());
     }
 
     private String pipeModelName(CableTier tier, String part) {

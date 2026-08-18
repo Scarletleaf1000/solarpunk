@@ -1,6 +1,12 @@
 package me.scarletleaf1000.sunworks.block.entity.custom.processor;
 
+import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
+import me.scarletleaf1000.sunworks.block.entity.io.ConfigurableMachine;
+import me.scarletleaf1000.sunworks.block.entity.io.IOType;
+import me.scarletleaf1000.sunworks.block.entity.io.RelativeSide;
+import me.scarletleaf1000.sunworks.block.entity.io.RestrictedItemHandler;
+import me.scarletleaf1000.sunworks.block.entity.io.SideConfiguration;
 import me.scarletleaf1000.sunworks.recipe.ModRecipes;
 import me.scarletleaf1000.sunworks.recipe.custom.AlloySmelterRecipe;
 import me.scarletleaf1000.sunworks.recipe.custom.AlloySmelterRecipeInput;
@@ -36,10 +42,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock.LIT;
 
-public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuProvider {
+public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuProvider, ConfigurableMachine {
+    private static final Set<IOType> SUPPORTED_TYPES = Set.of(IOType.ITEM_INPUT, IOType.ITEM_OUTPUT);
+
+    private final SideConfiguration sideConfiguration = new SideConfiguration();
+
     public final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -86,8 +97,32 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
         };
     }
 
-    public IItemHandler getItemHandler(Direction direction) {
-        return this.itemHandler;
+    public IItemHandler getItemHandler(@Nullable Direction direction) {
+        if (direction == null) {
+            return this.itemHandler;
+        }
+
+        RelativeSide side = RelativeSide.fromAbsolute(getFacing(), direction);
+        return switch (sideConfiguration.get(side)) {
+            case ITEM_INPUT -> new RestrictedItemHandler(itemHandler, INPUT_SLOT_1, OUTPUT_SLOT, true, false);
+            case ITEM_OUTPUT -> new RestrictedItemHandler(itemHandler, OUTPUT_SLOT, OUTPUT_SLOT + 1, false, true);
+            default -> null;
+        };
+    }
+
+    @Override
+    public SideConfiguration getSideConfiguration() {
+        return sideConfiguration;
+    }
+
+    @Override
+    public Set<IOType> getSupportedTypes() {
+        return SUPPORTED_TYPES;
+    }
+
+    @Override
+    public Direction getFacing() {
+        return getBlockState().getValue(SolarAlloySmelterBlock.FACING);
     }
 
     @Override
@@ -293,6 +328,10 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
         tag.putInt("solar_alloy_smelter.progress", progress);
         tag.putInt("solar_alloy_smelter.max_progress", maxProgress);
 
+        CompoundTag sideConfigTag = new CompoundTag();
+        sideConfiguration.save(sideConfigTag);
+        tag.put("side_config", sideConfigTag);
+
         super.saveAdditional(tag, registries);
     }
 
@@ -301,6 +340,10 @@ public class SolarAlloySmelterBlockEntity extends BlockEntity implements MenuPro
         itemHandler.deserializeNBT(registries, tag.getCompound("inventory"));
         progress = tag.getInt("solar_alloy_smelter.progress");
         maxProgress = tag.getInt("solar_alloy_smelter.max_progress");
+
+        if (tag.contains("side_config")) {
+            sideConfiguration.load(tag.getCompound("side_config"));
+        }
 
         super.loadAdditional(tag, registries);
     }

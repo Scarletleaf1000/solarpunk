@@ -2,6 +2,8 @@ package me.scarletleaf1000.sunworks.screen.custom;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.scarletleaf1000.sunworks.Sunworks;
+import me.scarletleaf1000.sunworks.screen.widget.ConfigurationPanelWidget;
+import me.scarletleaf1000.sunworks.screen.widget.ConfigurationTabButton;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,6 +18,9 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
     private static final ResourceLocation ARROW_TEXTURE =
             ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "textures/gui/container/alloy_progress.png");
 
+    private ConfigurationTabButton configTab;
+    private ConfigurationPanelWidget configPanel;
+
     public SolarAlloySmelterScreen(SolarAlloySmelterMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
     }
@@ -24,7 +29,19 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
     protected void init() {
         super.init();
 
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        int tabX = x - ConfigurationTabButton.WIDTH;
+        int tabY = y + 4;
 
+        configPanel = new ConfigurationPanelWidget(tabX, tabY, menu.blockEntity.getBlockPos(), menu.blockEntity);
+        configTab = new ConfigurationTabButton(tabX, tabY, () -> configPanel.setVisible(configTab.isExpanded()));
+
+        addRenderableWidget(configTab);
+        for (var button : configPanel.getButtons()) {
+            addRenderableWidget(button);
+        }
+        configPanel.setVisible(false);
     }
 
     @Override
@@ -38,6 +55,10 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         renderProgressArrow(guiGraphics, x, y);
+
+        if (configTab.isExpanded()) {
+            configPanel.renderBackground(guiGraphics);
+        }
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
@@ -49,7 +70,13 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         renderBackground(guiGraphics, mouseX, mouseY, delta);
+        if (configTab.isExpanded()) {
+            configPanel.updateTooltips();
+        }
         super.render(guiGraphics, mouseX, mouseY, delta);
+        if (configTab.isExpanded()) {
+            configPanel.renderIcons(guiGraphics);
+        }
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 }

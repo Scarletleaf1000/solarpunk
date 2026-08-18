@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The only block entity in an energy pipe network. Every tick it pulls energy from whatever
- * it is set to extract from, walks the (block-entity-free) pipe network it is part of via a
+ * Every energy pipe segment carries one of these. Each tick it pulls energy from whatever
+ * side(s) of itself are configured to extract, walks the pipe network it is part of via a
  * simple bounded flood fill, and splits the pulled energy evenly across every reachable output.
  */
 public class EnergyPipeBlockEntity extends BlockEntity {
@@ -67,7 +67,8 @@ public class EnergyPipeBlockEntity extends BlockEntity {
             }
 
             network = new HashSet<>();
-            Set<Endpoint> sinkEndpoints = findNetworkSinks(level, pos, tier, sourcePositions, network);
+            int[] bottleneckTransfer = {tier.getMaxTransfer()};
+            Set<Endpoint> sinkEndpoints = findNetworkSinks(level, pos, sourcePositions, network, bottleneckTransfer);
             if (sinkEndpoints.isEmpty()) break transferAttempt;
 
             List<IEnergyStorage> sinks = new ArrayList<>();
@@ -79,7 +80,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
             }
             if (sinks.isEmpty()) break transferAttempt;
 
-            transferred = distribute(sources, sinks, tier.getMaxTransfer()) > 0;
+            transferred = distribute(sources, sinks, bottleneckTransfer[0]) > 0;
         }
 
         Set<BlockPos> newPowered = transferred ? network : Set.of();
@@ -119,7 +120,13 @@ public class EnergyPipeBlockEntity extends BlockEntity {
         return endpoints;
     }
 
-    private Set<Endpoint> findNetworkSinks(Level level, BlockPos start, CableTier tier, Set<BlockPos> excludedPositions, Set<BlockPos> visitedPipes) {
+    /**
+     * Floods outward through pipes of any tier - the network can freely mix tiers, but
+     * {@code bottleneckTransfer} is clamped down to the weakest tier's max transfer rate
+     * encountered along the way, so a thin cable segment always throttles the whole path.
+     */
+    private Set<Endpoint> findNetworkSinks(Level level, BlockPos start, Set<BlockPos> excludedPositions,
+                                            Set<BlockPos> visitedPipes, int[] bottleneckTransfer) {
         Set<Endpoint> sinks = new LinkedHashSet<>();
         Deque<BlockPos> queue = new ArrayDeque<>();
 
@@ -132,10 +139,12 @@ public class EnergyPipeBlockEntity extends BlockEntity {
 
             for (Direction direction : Direction.values()) {
                 BlockPos neighborPos = current.relative(direction);
+                BlockState neighborState = level.getBlockState(neighborPos);
 
-                if (AbstractPipeBlock.isPipeOfTier(level, neighborPos, tier)) {
+                if (neighborState.getBlock() instanceof AbstractPipeBlock neighborPipe) {
                     if (visitedPipes.add(neighborPos)) {
                         queue.add(neighborPos);
+                        bottleneckTransfer[0] = Math.min(bottleneckTransfer[0], neighborPipe.getTier().getMaxTransfer());
                     }
                     continue;
                 }

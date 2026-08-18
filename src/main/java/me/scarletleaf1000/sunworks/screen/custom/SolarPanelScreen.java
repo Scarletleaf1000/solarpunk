@@ -3,6 +3,8 @@ package me.scarletleaf1000.sunworks.screen.custom;
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.screen.renderer.EnergyDisplayTooltipArea;
+import me.scarletleaf1000.sunworks.screen.widget.ConfigurationPanelWidget;
+import me.scarletleaf1000.sunworks.screen.widget.ConfigurationTabButton;
 import me.scarletleaf1000.sunworks.util.MouseUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -18,6 +20,8 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
             ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID,"textures/gui/container/solar_panel.png");
 
     private EnergyDisplayTooltipArea energyInfoArea;
+    private ConfigurationTabButton configTab;
+    private ConfigurationPanelWidget configPanel;
 
     public SolarPanelScreen(SolarPanelMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -28,6 +32,20 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         super.init();
 
         assignEnergyInfoArea();
+
+        int x = (width - imageWidth) / 2;
+        int y = (height - imageHeight) / 2;
+        int tabX = x - ConfigurationTabButton.WIDTH;
+        int tabY = y + 4;
+
+        configPanel = new ConfigurationPanelWidget(tabX, tabY, menu.blockEntity.getBlockPos(), menu.blockEntity);
+        configTab = new ConfigurationTabButton(tabX, tabY, () -> configPanel.setVisible(configTab.isExpanded()));
+
+        addRenderableWidget(configTab);
+        for (var button : configPanel.getButtons()) {
+            addRenderableWidget(button);
+        }
+        configPanel.setVisible(false);
     }
 
     private void renderEnergyAreaTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int x, int y) {
@@ -61,12 +79,22 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         energyInfoArea.render(guiGraphics);
+
+        if (configTab.isExpanded()) {
+            configPanel.renderBackground(guiGraphics);
+        }
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
         renderBackground(guiGraphics, mouseX, mouseY, delta);
+        if (configTab.isExpanded()) {
+            configPanel.updateTooltips();
+        }
         super.render(guiGraphics, mouseX, mouseY, delta);
+        if (configTab.isExpanded()) {
+            configPanel.renderIcons(guiGraphics);
+        }
         renderTooltip(guiGraphics, mouseX, mouseY);
     }
 

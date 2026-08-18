@@ -4,7 +4,6 @@ import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
 import me.scarletleaf1000.sunworks.block.custom.cable.CableTier;
 import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeBlock;
-import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeExtractorBlock;
 import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
@@ -95,11 +94,10 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()
             ),
             block -> new DescriptiveBlockItem(block, new Item.Properties(),
-                    Component.translatable("tooltip.sunworks.solar_panel.power_transfer"),
+                    Component.translatable("tooltip.sunworks.solar_panel.power_generation"),
                     Component.translatable("tooltip.sunworks.solar_panel.energy_storage")));
 
     public static final Map<CableTier, DeferredBlock<EnergyPipeBlock>> ENERGY_PIPES = new EnumMap<>(CableTier.class);
-    public static final Map<CableTier, DeferredBlock<EnergyPipeExtractorBlock>> ENERGY_PIPE_EXTRACTORS = new EnumMap<>(CableTier.class);
 
     static {
         for (CableTier tier : CableTier.values()) {
@@ -108,27 +106,18 @@ public class ModBlocks {
     }
 
     private static void registerPipeTier(CableTier tier) {
-        String plainName = "energy_pipe_" + tier.getName();
-        String extractorName = "energy_pipe_" + tier.getName() + "_extractor";
+        String name = "energy_pipe_" + tier.getName();
 
-        DeferredBlock<EnergyPipeBlock> plain = BLOCKS.register(plainName, () -> new EnergyPipeBlock(
+        DeferredBlock<EnergyPipeBlock> pipe = BLOCKS.register(name, () -> new EnergyPipeBlock(
                 BlockBehaviour.Properties.of()
                         .strength(1.5f)
                         .sound(SoundType.METAL)
                         .noOcclusion(),
-                tier, () -> ENERGY_PIPE_EXTRACTORS.get(tier).get()));
-        ModItems.ITEMS.register(plainName, () -> new DescriptiveBlockItem(plain.get(), new Item.Properties(),
+                tier));
+        ModItems.ITEMS.register(name, () -> new DescriptiveBlockItem(pipe.get(), new Item.Properties(),
                 Component.translatable("tooltip.sunworks.power_transfer_rate", tier.getMaxTransfer())));
 
-        DeferredBlock<EnergyPipeExtractorBlock> extractor = BLOCKS.register(extractorName, () -> new EnergyPipeExtractorBlock(
-                BlockBehaviour.Properties.of()
-                        .strength(1.5f)
-                        .sound(SoundType.METAL)
-                        .noOcclusion(),
-                tier, () -> ENERGY_PIPES.get(tier).get()));
-
-        ENERGY_PIPES.put(tier, plain);
-        ENERGY_PIPE_EXTRACTORS.put(tier, extractor);
+        ENERGY_PIPES.put(tier, pipe);
     }
 
     private static DeferredBlock<Block> registerOre(String name, boolean deepslate) {

@@ -26,8 +26,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Shared geometry/connection logic for every energy pipe, regardless of tier or whether the
- * concrete block is the plain (no block entity) variant or the extracting (block entity) variant.
+ * Shared geometry/connection logic for every energy pipe, regardless of tier. Each of the 6
+ * sides independently tracks whether it is a normal (output) or extracting (input) connection,
+ * toggleable per-side by the player - see {@link #useWithoutItem}.
  */
 public abstract class AbstractPipeBlock extends Block {
     public static final EnumProperty<PipeConnection> NORTH = EnumProperty.create("north", PipeConnection.class);
@@ -65,12 +66,6 @@ public abstract class AbstractPipeBlock extends Block {
         return tier;
     }
 
-    /**
-     * @return true if this pipe type should render/behave as an extraction pipe on any
-     * side connected to a (non-pipe) energy storage.
-     */
-    protected abstract boolean isExtractor();
-
     private BlockState defaultConnectionState() {
         BlockState state = stateDefinition.any();
         for (EnumProperty<PipeConnection> property : PROPERTY_BY_DIRECTION.values()) {
@@ -84,21 +79,31 @@ public abstract class AbstractPipeBlock extends Block {
         builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, POWERED);
     }
 
-    public static boolean isPipeOfTier(BlockGetter level, BlockPos pos, CableTier tier) {
-        BlockState state = level.getBlockState(pos);
-        return state.getBlock() instanceof AbstractPipeBlock pipe && pipe.getTier() == tier;
+    /**
+     * @return true if the block at {@code pos} is any energy pipe, regardless of tier - pipes of
+     * every tier visually and functionally connect to one another, with the network's effective
+     * transfer rate bottlenecked by the weakest tier along the path.
+     */
+    public static boolean isPipe(BlockGetter level, BlockPos pos) {
+        return level.getBlockState(pos).getBlock() instanceof AbstractPipeBlock;
     }
 
+    /**
+     * @return the "default" connection to a neighbor, ignoring any previously player-toggled
+     * extract state - always {@link PipeConnection#PIPE} for a fresh/newly-connectable side.
+     * Extract sides are only ever set by the player via {@link #useWithoutItem}, and preserved
+     * across recomputation by {@link #updateShape}.
+     */
     protected PipeConnection computeConnection(LevelReader level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
 
-        if (isPipeOfTier(level, neighborPos, tier)) {
+        if (isPipe(level, neighborPos)) {
             return PipeConnection.PIPE;
         }
 
         if (level instanceof Level realLevel
                 && ModEnergyUtil.doesBlockHaveEnergyStorage(neighborPos, direction.getOpposite(), realLevel)) {
-            return isExtractor() ? PipeConnection.EXTRACT : PipeConnection.PIPE;
+            return PipeConnection.PIPE;
         }
 
         return PipeConnection.NONE;
@@ -111,17 +116,6 @@ public abstract class AbstractPipeBlock extends Block {
         return state;
     }
 
-    public boolean hasEnergyConnectableNeighbor(Level level, BlockPos pos) {
-        for (Direction direction : Direction.values()) {
-            BlockPos neighborPos = pos.relative(direction);
-            if (!isPipeOfTier(level, neighborPos, tier)
-                    && ModEnergyUtil.doesBlockHaveEnergyStorage(neighborPos, direction.getOpposite(), level)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
         return recomputeAllConnections(context.getLevel(), context.getClickedPos(), defaultBlockState());
@@ -130,10 +124,17 @@ public abstract class AbstractPipeBlock extends Block {
     @Override
     protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
                                       LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (level instanceof LevelReader levelReader) {
-            return state.setValue(PROPERTY_BY_DIRECTION.get(direction), computeConnection(levelReader, pos, direction));
+        if (!(level instanceof LevelReader levelReader)) {
+            return state;
         }
-        return state;
+
+        EnumProperty<PipeConnection> property = PROPERTY_BY_DIRECTION.get(direction);
+        PipeConnection newConnection = computeConnection(levelReader, pos, direction);
+        if (newConnection == PipeConnection.PIPE && state.getValue(property) == PipeConnection.EXTRACT) {
+            newConnection = PipeConnection.EXTRACT;
+        }
+
+        return state.setValue(property, newConnection);
     }
 
     @Override
@@ -159,8 +160,11 @@ public abstract class AbstractPipeBlock extends Block {
         return map;
     }
 
-    protected abstract @Nullable BlockState toggleExtracting(Level level, BlockPos pos, BlockState state);
-
+    /**
+     * Shift-right-clicking a specific face toggles that side alone between a normal (output)
+     * connection and an extracting (input) one - only valid on a side directly touching a
+     * (non-pipe) energy storage; pipe-to-pipe junctions have nothing to extract from.
+     */
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!player.isShiftKeyDown()) {
@@ -171,12 +175,16 @@ public abstract class AbstractPipeBlock extends Block {
             return InteractionResult.SUCCESS;
         }
 
-        BlockState newState = toggleExtracting(level, pos, state);
-        if (newState == null) {
+        Direction direction = hitResult.getDirection();
+        EnumProperty<PipeConnection> property = PROPERTY_BY_DIRECTION.get(direction);
+        PipeConnection current = state.getValue(property);
+
+        if (current == PipeConnection.NONE || isPipe(level, pos.relative(direction))) {
             return InteractionResult.FAIL;
         }
 
-        level.setBlock(pos, newState, Block.UPDATE_ALL);
+        PipeConnection toggled = current == PipeConnection.EXTRACT ? PipeConnection.PIPE : PipeConnection.EXTRACT;
+        level.setBlock(pos, state.setValue(property, toggled), Block.UPDATE_ALL);
         return InteractionResult.CONSUME;
     }
 }

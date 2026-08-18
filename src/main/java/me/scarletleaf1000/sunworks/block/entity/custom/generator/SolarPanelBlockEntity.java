@@ -3,6 +3,10 @@ package me.scarletleaf1000.sunworks.block.entity.custom.generator;
 import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
 import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyStorage;
 import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyUtil;
+import me.scarletleaf1000.sunworks.block.entity.io.ConfigurableMachine;
+import me.scarletleaf1000.sunworks.block.entity.io.IOType;
+import me.scarletleaf1000.sunworks.block.entity.io.RelativeSide;
+import me.scarletleaf1000.sunworks.block.entity.io.SideConfiguration;
 import me.scarletleaf1000.sunworks.screen.custom.SolarPanelMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,9 +28,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
-public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
+import java.util.Set;
+
+public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, ConfigurableMachine {
+    private static final Set<IOType> SUPPORTED_TYPES = Set.of(IOType.ENERGY_OUTPUT);
+
+    private final SideConfiguration sideConfiguration = new SideConfiguration();
+
     public SolarPanelBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.SOLAR_PANEL_BE.get(), pos, blockState);
+        sideConfiguration.set(RelativeSide.DOWN, IOType.ENERGY_OUTPUT);
     }
 
     private final ModEnergyStorage ENERGY_STORAGE = createEnergyStorage();
@@ -75,7 +86,27 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
     };
 
     public IEnergyStorage getEnergyStorage(@Nullable Direction direction) {
-        return this.EXTRACT_ONLY_STORAGE;
+        if (direction == null) {
+            return this.EXTRACT_ONLY_STORAGE;
+        }
+
+        RelativeSide side = RelativeSide.fromAbsolute(getFacing(), direction);
+        return sideConfiguration.get(side) == IOType.ENERGY_OUTPUT ? this.EXTRACT_ONLY_STORAGE : null;
+    }
+
+    @Override
+    public SideConfiguration getSideConfiguration() {
+        return sideConfiguration;
+    }
+
+    @Override
+    public Set<IOType> getSupportedTypes() {
+        return SUPPORTED_TYPES;
+    }
+
+    @Override
+    public boolean isSideConfigurable(RelativeSide side) {
+        return side == RelativeSide.DOWN;
     }
 
     public void tick(Level level, BlockPos pos, BlockState state) {
@@ -85,6 +116,10 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private void pushEnergyToNeighborsBelow() {
+        if (sideConfiguration.get(RelativeSide.DOWN) != IOType.ENERGY_OUTPUT) {
+            return;
+        }
+
         if (ModEnergyUtil.doesBlockHaveEnergyStorage(this.worldPosition.below(), Direction.UP, this.level)) {
             ModEnergyUtil.move(this.worldPosition, this.worldPosition.below(), MAX_TRANSFER, this.level);
         }
@@ -124,6 +159,10 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("solar_panel.energy", ENERGY_STORAGE.getEnergyStored());
 
+        CompoundTag sideConfigTag = new CompoundTag();
+        sideConfiguration.save(sideConfigTag);
+        tag.put("side_config", sideConfigTag);
+
         super.saveAdditional(tag, registries);
     }
 
@@ -132,6 +171,9 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider {
         super.loadAdditional(tag, registries);
         ENERGY_STORAGE.setEnergy(tag.getInt("solar_panel.energy"));
 
+        if (tag.contains("side_config")) {
+            sideConfiguration.load(tag.getCompound("side_config"));
+        }
     }
 
     @Override
