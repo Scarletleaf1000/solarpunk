@@ -2,6 +2,9 @@ package me.scarletleaf1000.sunworks.block;
 
 import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
+import me.scarletleaf1000.sunworks.block.custom.cable.CableTier;
+import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeBlock;
+import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeExtractorBlock;
 import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
@@ -16,6 +19,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class ModBlocks {
@@ -84,6 +89,38 @@ public class ModBlocks {
                     .sound(SoundType.METAL)
                     .requiresCorrectToolForDrops()
             ));
+
+    public static final Map<CableTier, DeferredBlock<EnergyPipeBlock>> ENERGY_PIPES = new EnumMap<>(CableTier.class);
+    public static final Map<CableTier, DeferredBlock<EnergyPipeExtractorBlock>> ENERGY_PIPE_EXTRACTORS = new EnumMap<>(CableTier.class);
+
+    static {
+        for (CableTier tier : CableTier.values()) {
+            registerPipeTier(tier);
+        }
+    }
+
+    private static void registerPipeTier(CableTier tier) {
+        String plainName = "energy_pipe_" + tier.getName();
+        String extractorName = "energy_pipe_" + tier.getName() + "_extractor";
+
+        DeferredBlock<EnergyPipeBlock> plain = BLOCKS.register(plainName, () -> new EnergyPipeBlock(
+                BlockBehaviour.Properties.of()
+                        .strength(1.5f)
+                        .sound(SoundType.METAL)
+                        .noOcclusion(),
+                tier, () -> ENERGY_PIPE_EXTRACTORS.get(tier).get()));
+        registerBlockItem(plainName, plain);
+
+        DeferredBlock<EnergyPipeExtractorBlock> extractor = BLOCKS.register(extractorName, () -> new EnergyPipeExtractorBlock(
+                BlockBehaviour.Properties.of()
+                        .strength(1.5f)
+                        .sound(SoundType.METAL)
+                        .noOcclusion(),
+                tier, () -> ENERGY_PIPES.get(tier).get()));
+
+        ENERGY_PIPES.put(tier, plain);
+        ENERGY_PIPE_EXTRACTORS.put(tier, extractor);
+    }
 
     private static DeferredBlock<Block> registerOre(String name, boolean deepslate) {
         return registerBlock(name, () -> new Block(BlockBehaviour.Properties.of()
