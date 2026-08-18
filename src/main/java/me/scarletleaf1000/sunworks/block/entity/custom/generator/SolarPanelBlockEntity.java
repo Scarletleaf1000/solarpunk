@@ -136,6 +136,7 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, 
         if (level.getDayTime() > 23000 || level.getDayTime() < 13000) {
             minLight = 9;
         }
+        if (level.isRainingAt(pos)) minLight += 2;
 
         if (level.getBrightness(LightLayer.SKY, pos.above()) > minLight) {
             return level.getBrightness(LightLayer.SKY, pos.above()) - minLight;

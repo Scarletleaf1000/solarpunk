@@ -12,9 +12,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An energy pipe segment. Every segment carries a {@link EnergyPipeBlockEntity} so that any
- * side can be individually toggled between a normal (output) and extracting (input)
- * connection - see {@link AbstractPipeBlock#useWithoutItem}.
+ * An energy pipe segment. Every segment carries a {@link EnergyPipeBlockEntity} that
+ * automatically routes energy through any connected machine face based on that machine's own
+ * capability - there is no manual per-side input/output toggle.
  */
 public class EnergyPipeBlock extends AbstractPipeBlock implements EntityBlock {
     public EnergyPipeBlock(Properties properties, CableTier tier) {

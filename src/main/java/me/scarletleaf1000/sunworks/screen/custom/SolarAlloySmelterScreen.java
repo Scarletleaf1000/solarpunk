@@ -34,7 +34,7 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
         int tabX = x - ConfigurationTabButton.WIDTH;
         int tabY = y + 4;
 
-        configPanel = new ConfigurationPanelWidget(tabX, tabY, menu.blockEntity.getBlockPos(), menu.blockEntity);
+        configPanel = new ConfigurationPanelWidget(width, height, menu.blockEntity.getBlockPos(), menu.blockEntity);
         configTab = new ConfigurationTabButton(tabX, tabY, () -> configPanel.setVisible(configTab.isExpanded()));
 
         addRenderableWidget(configTab);
@@ -42,6 +42,16 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
             addRenderableWidget(button);
         }
         configPanel.setVisible(false);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (configTab.isExpanded() && !configPanel.isInsideContent(mouseX, mouseY)
+                && !configTab.isMouseOver(mouseX, mouseY)) {
+            configTab.setExpanded(false);
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

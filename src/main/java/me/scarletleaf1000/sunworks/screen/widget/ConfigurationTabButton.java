@@ -34,10 +34,17 @@ public class ConfigurationTabButton extends AbstractWidget {
         return expanded;
     }
 
+    public void setExpanded(boolean expanded) {
+        if (this.expanded == expanded) {
+            return;
+        }
+        this.expanded = expanded;
+        onToggle.run();
+    }
+
     @Override
     public void onClick(double mouseX, double mouseY) {
-        expanded = !expanded;
-        onToggle.run();
+        setExpanded(!expanded);
     }
 
     @Override

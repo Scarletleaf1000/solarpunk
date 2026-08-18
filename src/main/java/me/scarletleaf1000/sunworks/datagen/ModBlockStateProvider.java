@@ -164,17 +164,17 @@ public class ModBlockStateProvider extends BlockStateProvider {
                     .condition(AbstractPipeBlock.POWERED, true);
 
             builder.part().modelFile(unpowered.arm()).rotationX(x).rotationY(y).addModel()
-                    .condition(property, PipeConnection.PIPE, PipeConnection.EXTRACT)
+                    .condition(property, PipeConnection.PIPE, PipeConnection.MACHINE)
                     .condition(AbstractPipeBlock.POWERED, false);
             builder.part().modelFile(powered.arm()).rotationX(x).rotationY(y).addModel()
-                    .condition(property, PipeConnection.PIPE, PipeConnection.EXTRACT)
+                    .condition(property, PipeConnection.PIPE, PipeConnection.MACHINE)
                     .condition(AbstractPipeBlock.POWERED, true);
 
             builder.part().modelFile(unpowered.panel()).rotationX(x).rotationY(y).addModel()
-                    .condition(property, PipeConnection.EXTRACT)
+                    .condition(property, PipeConnection.MACHINE)
                     .condition(AbstractPipeBlock.POWERED, false);
             builder.part().modelFile(powered.panel()).rotationX(x).rotationY(y).addModel()
-                    .condition(property, PipeConnection.EXTRACT)
+                    .condition(property, PipeConnection.MACHINE)
                     .condition(AbstractPipeBlock.POWERED, true);
         }
 

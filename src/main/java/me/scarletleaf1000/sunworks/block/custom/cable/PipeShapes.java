@@ -39,7 +39,7 @@ public final class PipeShapes {
             VoxelShape piece = switch (connection) {
                 case NONE -> null;
                 case PIPE -> armShape(direction);
-                case EXTRACT -> panelShape(direction);
+                case MACHINE -> Shapes.join(armShape(direction), panelShape(direction), BooleanOp.OR);
             };
             if (piece != null) {
                 shape = Shapes.join(shape, piece, BooleanOp.OR);

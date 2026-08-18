@@ -20,8 +20,8 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * The expandable side-configuration panel shown next to a machine's GUI. Lays its 6 face
- * buttons out in an unfolded-cube cross pattern:
+ * The expandable side-configuration panel shown as a popup centered over a machine's GUI. Lays
+ * its 6 face buttons out in an unfolded-cube cross pattern:
  * <pre>
  *  . U .
  *  L B R
@@ -31,6 +31,10 @@ import java.util.Map;
  * {@link Button}s (so the screen can add them via {@code addRenderableWidget} normally); this
  * class only owns the background texture and the {@link IOType} icon overlays drawn on top of
  * them, which must be rendered after the buttons (see {@link #renderIcons}).
+ *
+ * <p>The background texture is a standard 256x256 GUI sheet, but the actual visible popup
+ * content only occupies the top-left {@link #CONTENT_WIDTH}x{@link #CONTENT_HEIGHT} corner of
+ * it - see {@link #renderBackground}.
  */
 public class ConfigurationPanelWidget {
     private static final ResourceLocation BACKGROUND =
@@ -38,15 +42,18 @@ public class ConfigurationPanelWidget {
     private static final ResourceLocation ICONS =
             ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "textures/gui/container/io_icons.png");
 
-    public static final int WIDTH = 64;
-    public static final int HEIGHT = 84;
+    private static final int TEXTURE_WIDTH = 256;
+    private static final int TEXTURE_HEIGHT = 256;
+
+    public static final int CONTENT_WIDTH = 140;
+    public static final int CONTENT_HEIGHT = 70;
 
     private static final int BUTTON_SIZE = 16;
     private static final int GAP = 3;
     private static final int CELL = BUTTON_SIZE + GAP;
     private static final int GRID_SIZE = BUTTON_SIZE * 3 + GAP * 2;
-    private static final int GRID_LEFT = (WIDTH - GRID_SIZE) / 2;
-    private static final int GRID_TOP = ConfigurationTabButton.HEIGHT + GAP;
+    private static final int GRID_LEFT = (CONTENT_WIDTH - GRID_SIZE) / 2;
+    private static final int GRID_TOP = (CONTENT_HEIGHT - GRID_SIZE) / 2;
     private static final int ICON_SIZE = 8;
     private static final int ICON_SHEET_WIDTH = ICON_SIZE * IOType.values().length;
 
@@ -61,29 +68,57 @@ public class ConfigurationPanelWidget {
         LAYOUT.put(RelativeSide.FRONT, new int[]{2, 2});
     }
 
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
     private final ConfigurableMachine machine;
     private final Map<RelativeSide, Button> buttons = new EnumMap<>(RelativeSide.class);
 
-    public ConfigurationPanelWidget(int x, int y, BlockPos pos, ConfigurableMachine machine) {
-        this.x = x;
-        this.y = y;
+    public ConfigurationPanelWidget(int screenWidth, int screenHeight, BlockPos pos, ConfigurableMachine machine) {
         this.machine = machine;
 
         for (RelativeSide side : RelativeSide.values()) {
-            int[] cell = LAYOUT.get(side);
-            int buttonX = x + GRID_LEFT + cell[0] * CELL;
-            int buttonY = y + GRID_TOP + cell[1] * CELL;
-
             Button button = Button.builder(Component.empty(),
                         btn -> PacketDistributor.sendToServer(new SideConfigCyclePayload(pos, side)))
-                    .bounds(buttonX, buttonY, BUTTON_SIZE, BUTTON_SIZE)
+                    .bounds(0, 0, BUTTON_SIZE, BUTTON_SIZE)
                     .build();
             button.active = machine.isSideConfigurable(side);
 
             buttons.put(side, button);
         }
+
+        updateLayout(screenWidth, screenHeight);
+    }
+
+    /**
+     * Recomputes the popup's centered position (and every button's position) for the given
+     * screen size - call this from the screen's {@code init()}, since the screen may be resized.
+     */
+    public void updateLayout(int screenWidth, int screenHeight) {
+        this.x = (screenWidth - CONTENT_WIDTH) / 2;
+        this.y = (screenHeight - CONTENT_HEIGHT) / 2;
+
+        for (Map.Entry<RelativeSide, Button> entry : buttons.entrySet()) {
+            int[] cell = LAYOUT.get(entry.getKey());
+            Button button = entry.getValue();
+            button.setX(x + GRID_LEFT + cell[0] * CELL);
+            button.setY(y + GRID_TOP + cell[1] * CELL);
+        }
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * @return true if the given mouse position is within the popup's visible content box -
+     * used by the screen to close the popup on an outside click.
+     */
+    public boolean isInsideContent(double mouseX, double mouseY) {
+        return mouseX >= x && mouseX < x + CONTENT_WIDTH && mouseY >= y && mouseY < y + CONTENT_HEIGHT;
     }
 
     /**
@@ -114,7 +149,7 @@ public class ConfigurationPanelWidget {
     public void renderBackground(GuiGraphics guiGraphics) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(BACKGROUND, x, y, 0, 0, WIDTH, HEIGHT, WIDTH, HEIGHT);
+        guiGraphics.blit(BACKGROUND, x, y, 0, 0, CONTENT_WIDTH, CONTENT_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     /**

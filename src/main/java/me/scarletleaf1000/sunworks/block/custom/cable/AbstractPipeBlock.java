@@ -1,11 +1,10 @@
 package me.scarletleaf1000.sunworks.block.custom.cable;
 
 import com.google.common.collect.ImmutableMap;
+import me.scarletleaf1000.sunworks.block.entity.custom.cable.EnergyPipeBlockEntity;
 import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -17,7 +16,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
@@ -27,8 +25,11 @@ import java.util.Map;
 
 /**
  * Shared geometry/connection logic for every energy pipe, regardless of tier. Each of the 6
- * sides independently tracks whether it is a normal (output) or extracting (input) connection,
- * toggleable per-side by the player - see {@link #useWithoutItem}.
+ * sides automatically connects to either another pipe ({@link PipeConnection#PIPE}) or any
+ * other block exposing an energy capability ({@link PipeConnection#MACHINE}, which includes
+ * both our own machines and other mods' cables/machines). There is no manual per-side toggle -
+ * whether a {@code MACHINE} face inputs or outputs energy is decided every tick from that
+ * neighbor's own capability, see {@code EnergyPipeBlockEntity}.
  */
 public abstract class AbstractPipeBlock extends Block {
     public static final EnumProperty<PipeConnection> NORTH = EnumProperty.create("north", PipeConnection.class);
@@ -89,10 +90,10 @@ public abstract class AbstractPipeBlock extends Block {
     }
 
     /**
-     * @return the "default" connection to a neighbor, ignoring any previously player-toggled
-     * extract state - always {@link PipeConnection#PIPE} for a fresh/newly-connectable side.
-     * Extract sides are only ever set by the player via {@link #useWithoutItem}, and preserved
-     * across recomputation by {@link #updateShape}.
+     * @return the connection to a neighbor, purely automatic and recomputed on every
+     * neighbor/state change - {@link PipeConnection#PIPE} for another pipe segment,
+     * {@link PipeConnection#MACHINE} for any other block exposing an energy capability
+     * (a machine, or another mod's cable/machine), or {@link PipeConnection#NONE} otherwise.
      */
     protected PipeConnection computeConnection(LevelReader level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
@@ -103,7 +104,7 @@ public abstract class AbstractPipeBlock extends Block {
 
         if (level instanceof Level realLevel
                 && ModEnergyUtil.doesBlockHaveEnergyStorage(neighborPos, direction.getOpposite(), realLevel)) {
-            return PipeConnection.PIPE;
+            return PipeConnection.MACHINE;
         }
 
         return PipeConnection.NONE;
@@ -130,10 +131,11 @@ public abstract class AbstractPipeBlock extends Block {
 
         EnumProperty<PipeConnection> property = PROPERTY_BY_DIRECTION.get(direction);
         PipeConnection newConnection = computeConnection(levelReader, pos, direction);
-        if (newConnection == PipeConnection.PIPE && state.getValue(property) == PipeConnection.EXTRACT) {
-            newConnection = PipeConnection.EXTRACT;
+        if (state.getValue(property) != newConnection) {
+            // A pipe or machine was placed/removed next to us - every pipe's cached network
+            // topology may now be stale, see EnergyPipeBlockEntity#globalTopologyVersion.
+            EnergyPipeBlockEntity.bumpTopologyVersion();
         }
-
         return state.setValue(property, newConnection);
     }
 
@@ -158,33 +160,5 @@ public abstract class AbstractPipeBlock extends Block {
             map.put(entry.getKey(), state.getValue(entry.getValue()));
         }
         return map;
-    }
-
-    /**
-     * Shift-right-clicking a specific face toggles that side alone between a normal (output)
-     * connection and an extracting (input) one - only valid on a side directly touching a
-     * (non-pipe) energy storage; pipe-to-pipe junctions have nothing to extract from.
-     */
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!player.isShiftKeyDown()) {
-            return InteractionResult.PASS;
-        }
-
-        if (level.isClientSide) {
-            return InteractionResult.SUCCESS;
-        }
-
-        Direction direction = hitResult.getDirection();
-        EnumProperty<PipeConnection> property = PROPERTY_BY_DIRECTION.get(direction);
-        PipeConnection current = state.getValue(property);
-
-        if (current == PipeConnection.NONE || isPipe(level, pos.relative(direction))) {
-            return InteractionResult.FAIL;
-        }
-
-        PipeConnection toggled = current == PipeConnection.EXTRACT ? PipeConnection.PIPE : PipeConnection.EXTRACT;
-        level.setBlock(pos, state.setValue(property, toggled), Block.UPDATE_ALL);
-        return InteractionResult.CONSUME;
     }
 }
