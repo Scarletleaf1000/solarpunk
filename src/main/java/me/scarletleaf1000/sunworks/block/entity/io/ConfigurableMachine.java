@@ -34,4 +34,27 @@ public interface ConfigurableMachine {
     default Direction getFacing() {
         return Direction.NORTH;
     }
+
+    /**
+     * @return whether this machine offers the "eject" toggle in the configuration panel at all -
+     * machines with nothing to proactively push (e.g. no energy output) should leave this false
+     * so the button doesn't show up for them.
+     */
+    default boolean supportsEject() {
+        return false;
+    }
+
+    /**
+     * @return whether eject mode is currently on. While on, the machine actively pushes its
+     * output resource out through every side configured as an output - but only into neighbors
+     * that are <b>not</b> pipes, since pipes already pull from connected machines themselves via
+     * their own network sweep (see {@code EnergyPipeBlockEntity}); pushing into a pipe as well
+     * would double up on that same per-tick budget.
+     */
+    default boolean isEjectEnabled() {
+        return false;
+    }
+
+    default void setEjectEnabled(boolean enabled) {
+    }
 }

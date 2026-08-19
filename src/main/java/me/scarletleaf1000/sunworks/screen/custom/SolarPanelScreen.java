@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Optional;
 
@@ -58,6 +59,15 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (configTab.isExpanded() && keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            configTab.setExpanded(false);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
     private void renderEnergyAreaTooltip(GuiGraphics guiGraphics, int pMouseX, int pMouseY, int x, int y) {
         if(isMouseAboveArea(pMouseX, pMouseY, x, y, 83, 11, 8, 64)) {
             guiGraphics.renderTooltip(this.font, energyInfoArea.getTooltips(),
@@ -100,6 +110,7 @@ public class SolarPanelScreen extends AbstractContainerScreen<SolarPanelMenu> {
         renderBackground(guiGraphics, mouseX, mouseY, delta);
         if (configTab.isExpanded()) {
             configPanel.updateTooltips();
+            configPanel.updateEjectButton();
         }
         super.render(guiGraphics, mouseX, mouseY, delta);
         if (configTab.isExpanded()) {

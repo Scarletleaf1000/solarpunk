@@ -1,5 +1,6 @@
 package me.scarletleaf1000.sunworks.block.entity.custom.generator;
 
+import me.scarletleaf1000.sunworks.block.custom.cable.AbstractPipeBlock;
 import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
 import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyStorage;
 import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyUtil;
@@ -34,6 +35,7 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, 
     private static final Set<IOType> SUPPORTED_TYPES = Set.of(IOType.ENERGY_OUTPUT);
 
     private final SideConfiguration sideConfiguration = new SideConfiguration();
+    private boolean ejectEnabled = false;
 
     public SolarPanelBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.SOLAR_PANEL_BE.get(), pos, blockState);
@@ -109,24 +111,52 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, 
         return side == RelativeSide.DOWN;
     }
 
-    public void tick(Level level, BlockPos pos, BlockState state) {
-        generatePower(getSunlightPower(level, pos));
-
-        pushEnergyToNeighborsBelow();
+    @Override
+    public boolean supportsEject() {
+        return true;
     }
 
-    private void pushEnergyToNeighborsBelow() {
-        if (sideConfiguration.get(RelativeSide.DOWN) != IOType.ENERGY_OUTPUT) {
-            return;
-        }
+    @Override
+    public boolean isEjectEnabled() {
+        return ejectEnabled;
+    }
 
-        if (ModEnergyUtil.doesBlockHaveEnergyStorage(this.worldPosition.below(), Direction.UP, this.level)) {
-            ModEnergyUtil.move(this.worldPosition, this.worldPosition.below(), MAX_TRANSFER, this.level);
+    @Override
+    public void setEjectEnabled(boolean enabled) {
+        this.ejectEnabled = enabled;
+        setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
         }
+    }
+
+    public void tick(Level level, BlockPos pos, BlockState state) {
+        generatePower(getSunlightPower(level, pos));
+        ejectEnergy(level, pos);
     }
 
     private void generatePower(int power) {
         this.ENERGY_STORAGE.receiveEnergy(5 * power, false);
+    }
+
+    /**
+     * While eject mode is on, actively pushes stored power out through every side configured as
+     * {@link IOType#ENERGY_OUTPUT} - but skips any neighbor that is itself a pipe, since pipes
+     * already pull from us on their own per-tick network sweep; pushing into one here too would
+     * double up on that same segment's tier budget for the same tick.
+     */
+    private void ejectEnergy(Level level, BlockPos pos) {
+        if (!ejectEnabled) return;
+
+        for (RelativeSide side : RelativeSide.values()) {
+            if (sideConfiguration.get(side) != IOType.ENERGY_OUTPUT) continue;
+
+            Direction absolute = side.toAbsolute(getFacing());
+            BlockPos neighborPos = pos.relative(absolute);
+            if (level.getBlockState(neighborPos).getBlock() instanceof AbstractPipeBlock) continue;
+
+            ModEnergyUtil.move(pos, neighborPos, MAX_TRANSFER, level);
+        }
     }
 
 
@@ -159,6 +189,7 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         tag.putInt("solar_panel.energy", ENERGY_STORAGE.getEnergyStored());
+        tag.putBoolean("solar_panel.eject_enabled", ejectEnabled);
 
         CompoundTag sideConfigTag = new CompoundTag();
         sideConfiguration.save(sideConfigTag);
@@ -171,6 +202,7 @@ public class SolarPanelBlockEntity extends BlockEntity implements MenuProvider, 
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         ENERGY_STORAGE.setEnergy(tag.getInt("solar_panel.energy"));
+        ejectEnabled = tag.getBoolean("solar_panel.eject_enabled");
 
         if (tag.contains("side_config")) {
             sideConfiguration.load(tag.getCompound("side_config"));

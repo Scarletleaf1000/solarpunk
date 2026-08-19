@@ -5,6 +5,7 @@ import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.entity.io.ConfigurableMachine;
 import me.scarletleaf1000.sunworks.block.entity.io.IOType;
 import me.scarletleaf1000.sunworks.block.entity.io.RelativeSide;
+import me.scarletleaf1000.sunworks.network.EjectTogglePayload;
 import me.scarletleaf1000.sunworks.network.SideConfigCyclePayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -14,9 +15,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +42,7 @@ import java.util.Map;
  */
 public class ConfigurationPanelWidget {
     private static final ResourceLocation BACKGROUND =
-            ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "textures/gui/container/configuration_panel.png");
+            ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "textures/gui/container/io_configuration_panel.png");
     private static final ResourceLocation ICONS =
             ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "textures/gui/container/io_icons.png");
 
@@ -46,15 +50,20 @@ public class ConfigurationPanelWidget {
     private static final int TEXTURE_HEIGHT = 256;
 
     public static final int CONTENT_WIDTH = 140;
-    public static final int CONTENT_HEIGHT = 70;
+    public static final int CONTENT_HEIGHT = 94;
 
     private static final int BUTTON_SIZE = 16;
     private static final int GAP = 3;
     private static final int CELL = BUTTON_SIZE + GAP;
     private static final int GRID_SIZE = BUTTON_SIZE * 3 + GAP * 2;
     private static final int GRID_LEFT = (CONTENT_WIDTH - GRID_SIZE) / 2;
-    private static final int GRID_TOP = (CONTENT_HEIGHT - GRID_SIZE) / 2;
+    private static final int GRID_TOP = 8;
     private static final int ICON_SIZE = 8;
+
+    private static final int EJECT_BUTTON_WIDTH = 110;
+    private static final int EJECT_BUTTON_HEIGHT = 16;
+    private static final int EJECT_BUTTON_LEFT = (CONTENT_WIDTH - EJECT_BUTTON_WIDTH) / 2;
+    private static final int EJECT_BUTTON_TOP = GRID_TOP + GRID_SIZE + 8;
     private static final int ICON_SHEET_WIDTH = ICON_SIZE * IOType.values().length;
 
     private static final Map<RelativeSide, int[]> LAYOUT = new EnumMap<>(RelativeSide.class);
@@ -72,6 +81,8 @@ public class ConfigurationPanelWidget {
     private int y;
     private final ConfigurableMachine machine;
     private final Map<RelativeSide, Button> buttons = new EnumMap<>(RelativeSide.class);
+    @Nullable
+    private final Button ejectButton;
 
     public ConfigurationPanelWidget(int screenWidth, int screenHeight, BlockPos pos, ConfigurableMachine machine) {
         this.machine = machine;
@@ -86,7 +97,18 @@ public class ConfigurationPanelWidget {
             buttons.put(side, button);
         }
 
+        this.ejectButton = machine.supportsEject()
+                ? Button.builder(ejectLabel(machine.isEjectEnabled()),
+                        btn -> PacketDistributor.sendToServer(new EjectTogglePayload(pos)))
+                    .bounds(0, 0, EJECT_BUTTON_WIDTH, EJECT_BUTTON_HEIGHT)
+                    .build()
+                : null;
+
         updateLayout(screenWidth, screenHeight);
+    }
+
+    private static Component ejectLabel(boolean enabled) {
+        return Component.translatable(enabled ? "gui.sunworks.eject_on" : "gui.sunworks.eject_off");
     }
 
     /**
@@ -102,6 +124,11 @@ public class ConfigurationPanelWidget {
             Button button = entry.getValue();
             button.setX(x + GRID_LEFT + cell[0] * CELL);
             button.setY(y + GRID_TOP + cell[1] * CELL);
+        }
+
+        if (ejectButton != null) {
+            ejectButton.setX(x + EJECT_BUTTON_LEFT);
+            ejectButton.setY(y + EJECT_BUTTON_TOP);
         }
     }
 
@@ -122,14 +149,33 @@ public class ConfigurationPanelWidget {
     }
 
     /**
-     * @return the 6 face buttons - add each of these via {@code Screen#addRenderableWidget}.
+     * @return the 6 face buttons plus the eject toggle (if the machine supports it) - add each
+     * of these via {@code Screen#addRenderableWidget}.
      */
     public Collection<Button> getButtons() {
-        return buttons.values();
+        if (ejectButton == null) {
+            return buttons.values();
+        }
+        List<Button> all = new ArrayList<>(buttons.values());
+        all.add(ejectButton);
+        return all;
     }
 
     public void setVisible(boolean visible) {
         buttons.values().forEach(button -> button.visible = visible);
+        if (ejectButton != null) {
+            ejectButton.visible = visible;
+        }
+    }
+
+    /**
+     * Refreshes the eject button's label to reflect the machine's current state - call this
+     * once per frame while the panel is expanded, same as {@link #updateTooltips()}.
+     */
+    public void updateEjectButton() {
+        if (ejectButton != null) {
+            ejectButton.setMessage(ejectLabel(machine.isEjectEnabled()));
+        }
     }
 
     /**

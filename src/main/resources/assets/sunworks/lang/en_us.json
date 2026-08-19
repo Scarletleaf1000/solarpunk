@@ -50,6 +50,9 @@
 
   "gui.sunworks.configuration_tab": "Side Configuration",
 
+  "gui.sunworks.eject_on": "Eject: ON",
+  "gui.sunworks.eject_off": "Eject: OFF",
+
   "gui.sunworks.side.front": "Front",
   "gui.sunworks.side.back": "Back",
   "gui.sunworks.side.left": "Left",

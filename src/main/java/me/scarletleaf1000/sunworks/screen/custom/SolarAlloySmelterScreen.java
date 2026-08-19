@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.lwjgl.glfw.GLFW;
 
 public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloySmelterMenu> {
     private static final ResourceLocation GUI_TEXTURE =
@@ -55,6 +56,15 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (configTab.isExpanded() && keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            configTab.setExpanded(false);
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -82,6 +92,7 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
         renderBackground(guiGraphics, mouseX, mouseY, delta);
         if (configTab.isExpanded()) {
             configPanel.updateTooltips();
+            configPanel.updateEjectButton();
         }
         super.render(guiGraphics, mouseX, mouseY, delta);
         if (configTab.isExpanded()) {

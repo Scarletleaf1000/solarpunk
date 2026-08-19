@@ -20,6 +20,7 @@ public class SideConfigNetworking {
     public static void register(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(Sunworks.MOD_ID).versioned("1");
         registrar.playToServer(SideConfigCyclePayload.TYPE, SideConfigCyclePayload.STREAM_CODEC, SideConfigNetworking::handle);
+        registrar.playToServer(EjectTogglePayload.TYPE, EjectTogglePayload.STREAM_CODEC, SideConfigNetworking::handleEjectToggle);
     }
 
     private static void handle(SideConfigCyclePayload payload, IPayloadContext context) {
@@ -41,6 +42,25 @@ public class SideConfigNetworking {
             blockEntity.setChanged();
             level.sendBlockUpdated(pos, blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
             level.invalidateCapabilities(pos);
+        });
+    }
+
+    private static void handleEjectToggle(EjectTogglePayload payload, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            Level level = player.level();
+            BlockPos pos = payload.pos();
+
+            if (player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > MAX_REACH_SQR) {
+                return;
+            }
+
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (!(blockEntity instanceof ConfigurableMachine machine) || !machine.supportsEject()) {
+                return;
+            }
+
+            machine.setEjectEnabled(!machine.isEjectEnabled());
         });
     }
 }
