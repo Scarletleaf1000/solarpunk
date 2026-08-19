@@ -1,20 +1,16 @@
 package me.scarletleaf1000.sunworks.block.custom.cable;
 
 import com.google.common.collect.ImmutableMap;
-import me.scarletleaf1000.sunworks.block.entity.custom.cable.EnergyPipeBlockEntity;
-import me.scarletleaf1000.sunworks.block.entity.energy.ModEnergyUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -24,12 +20,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Shared geometry/connection logic for every energy pipe, regardless of tier. Each of the 6
- * sides automatically connects to either another pipe ({@link PipeConnection#PIPE}) or any
- * other block exposing an energy capability ({@link PipeConnection#MACHINE}, which includes
- * both our own machines and other mods' cables/machines). There is no manual per-side toggle -
- * whether a {@code MACHINE} face inputs or outputs energy is decided every tick from that
- * neighbor's own capability, see {@code EnergyPipeBlockEntity}.
+ * Shared geometry/connection logic for every pipe type (energy, item, fluid). Each of the 6
+ * sides automatically connects to either another pipe of the same type ({@link PipeConnection#PIPE})
+ * or any other block exposing the capability this pipe type transports ({@link PipeConnection#MACHINE}).
+ * There is no manual per-side toggle - what flows across a {@code MACHINE} face is decided by
+ * the concrete pipe type's block entity.
  */
 public abstract class AbstractPipeBlock extends Block {
     public static final EnumProperty<PipeConnection> NORTH = EnumProperty.create("north", PipeConnection.class);
@@ -48,23 +43,9 @@ public abstract class AbstractPipeBlock extends Block {
             .put(Direction.DOWN, DOWN)
             .build();
 
-    /**
-     * Purely cosmetic state, set by {@code EnergyPipeBlockEntity} each tick: true while this
-     * segment is actively part of a network that is transferring energy right now, so the
-     * model provider can swap in a lit texture.
-     */
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
-
-    private final CableTier tier;
-
-    protected AbstractPipeBlock(Properties properties, CableTier tier) {
+    protected AbstractPipeBlock(Properties properties) {
         super(properties);
-        this.tier = tier;
         registerDefaultState(defaultConnectionState());
-    }
-
-    public CableTier getTier() {
-        return tier;
     }
 
     private BlockState defaultConnectionState() {
@@ -72,38 +53,50 @@ public abstract class AbstractPipeBlock extends Block {
         for (EnumProperty<PipeConnection> property : PROPERTY_BY_DIRECTION.values()) {
             state = state.setValue(property, PipeConnection.NONE);
         }
-        return state.setValue(POWERED, false);
+        return state;
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN, POWERED);
+        builder.add(NORTH, SOUTH, EAST, WEST, UP, DOWN);
     }
 
     /**
-     * @return true if the block at {@code pos} is any energy pipe, regardless of tier - pipes of
-     * every tier visually and functionally connect to one another, with the network's effective
-     * transfer rate bottlenecked by the weakest tier along the path.
+     * @return true if the block at {@code neighborPos} is a pipe segment this pipe can form a
+     * {@link PipeConnection#PIPE} connection with - i.e. same transport type; different pipe
+     * types (energy vs item vs fluid) never connect to each other.
      */
-    public static boolean isPipe(BlockGetter level, BlockPos pos) {
-        return level.getBlockState(pos).getBlock() instanceof AbstractPipeBlock;
+    protected abstract boolean canConnectToPipe(LevelReader level, BlockPos neighborPos);
+
+    /**
+     * @return true if the block at {@code neighborPos} exposes the capability this pipe type
+     * transports on the face looking back at the pipe, making it a {@link PipeConnection#MACHINE}
+     * connection. {@code face} is the direction from the pipe toward the neighbor.
+     */
+    protected abstract boolean canConnectToMachine(LevelReader level, BlockPos neighborPos, Direction face);
+
+    /**
+     * Called whenever one of this segment's connection states actually changes (a pipe or
+     * machine placed/removed next to it), so the concrete pipe type can invalidate its cached
+     * network topology.
+     */
+    protected void onTopologyChanged() {
     }
 
     /**
      * @return the connection to a neighbor, purely automatic and recomputed on every
-     * neighbor/state change - {@link PipeConnection#PIPE} for another pipe segment,
-     * {@link PipeConnection#MACHINE} for any other block exposing an energy capability
-     * (a machine, or another mod's cable/machine), or {@link PipeConnection#NONE} otherwise.
+     * neighbor/state change - {@link PipeConnection#PIPE} for another pipe segment of the same
+     * type, {@link PipeConnection#MACHINE} for any other block exposing this pipe type's
+     * capability, or {@link PipeConnection#NONE} otherwise.
      */
     protected PipeConnection computeConnection(LevelReader level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
 
-        if (isPipe(level, neighborPos)) {
+        if (canConnectToPipe(level, neighborPos)) {
             return PipeConnection.PIPE;
         }
 
-        if (level instanceof Level realLevel
-                && ModEnergyUtil.doesBlockHaveEnergyStorage(neighborPos, direction.getOpposite(), realLevel)) {
+        if (canConnectToMachine(level, neighborPos, direction)) {
             return PipeConnection.MACHINE;
         }
 
@@ -133,8 +126,8 @@ public abstract class AbstractPipeBlock extends Block {
         PipeConnection newConnection = computeConnection(levelReader, pos, direction);
         if (state.getValue(property) != newConnection) {
             // A pipe or machine was placed/removed next to us - every pipe's cached network
-            // topology may now be stale, see EnergyPipeBlockEntity#globalTopologyVersion.
-            EnergyPipeBlockEntity.bumpTopologyVersion();
+            // topology may now be stale.
+            onTopologyChanged();
         }
         return state.setValue(property, newConnection);
     }

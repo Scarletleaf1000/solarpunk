@@ -1,6 +1,7 @@
 package me.scarletleaf1000.sunworks.item;
 
 import me.scarletleaf1000.sunworks.Sunworks;
+import me.scarletleaf1000.sunworks.item.custom.ExtractorItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -34,6 +35,9 @@ public class ModItems {
             Item::new, new Item.Properties());
     public static final DeferredItem<Item> SOLAR_PANEL_COMPONENT = ITEMS.registerItem("solar_panel_component",
             Item::new, new Item.Properties());
+
+    public static final DeferredItem<ExtractorItem> EXTRACTOR = ITEMS.registerItem("extractor",
+            ExtractorItem::new, new Item.Properties());
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);

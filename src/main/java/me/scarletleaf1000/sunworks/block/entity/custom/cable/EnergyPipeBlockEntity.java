@@ -1,6 +1,7 @@
 package me.scarletleaf1000.sunworks.block.entity.custom.cable;
 
 import me.scarletleaf1000.sunworks.block.custom.cable.AbstractPipeBlock;
+import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeBlock;
 import me.scarletleaf1000.sunworks.block.custom.cable.PipeConnection;
 import me.scarletleaf1000.sunworks.block.entity.ModBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -118,7 +119,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
 
         Map<BlockPos, Map<BlockPos, Integer>> bottlenecks = new HashMap<>();
         for (BlockPos junction : junctions) {
-            int ownTier = level.getBlockState(junction).getBlock() instanceof AbstractPipeBlock pipeBlock
+            int ownTier = level.getBlockState(junction).getBlock() instanceof EnergyPipeBlock pipeBlock
                     ? pipeBlock.getTier().getMaxTransfer() : 0;
             bottlenecks.put(junction, computeBottleneckFrom(level, junction, ownTier));
         }
@@ -167,7 +168,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
                 if (settled.contains(neighborPos)) continue;
 
                 BlockState neighborState = level.getBlockState(neighborPos);
-                if (!(neighborState.getBlock() instanceof AbstractPipeBlock neighborPipe)) continue;
+                if (!(neighborState.getBlock() instanceof EnergyPipeBlock neighborPipe)) continue;
 
                 int candidate = Math.min(currentBottleneck, neighborPipe.getTier().getMaxTransfer());
                 Integer existing = bestBottleneck.get(neighborPos);
@@ -188,7 +189,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
      * itself, capped by this segment's own tier.
      */
     public int receiveFromExternal(Direction fromSide, int maxReceive, boolean simulate) {
-        if (level == null || maxReceive <= 0 || !(getBlockState().getBlock() instanceof AbstractPipeBlock pipeBlock)) {
+        if (level == null || maxReceive <= 0 || !(getBlockState().getBlock() instanceof EnergyPipeBlock pipeBlock)) {
             return 0;
         }
 
@@ -210,7 +211,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
      * this segment's own tier.
      */
     public int extractForExternal(Direction fromSide, int maxExtract, boolean simulate) {
-        if (level == null || maxExtract <= 0 || !(getBlockState().getBlock() instanceof AbstractPipeBlock pipeBlock)) {
+        if (level == null || maxExtract <= 0 || !(getBlockState().getBlock() instanceof EnergyPipeBlock pipeBlock)) {
             return 0;
         }
 
@@ -226,7 +227,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
     }
 
     public int getMaxTransfer() {
-        return getBlockState().getBlock() instanceof AbstractPipeBlock pipeBlock ? pipeBlock.getTier().getMaxTransfer() : 0;
+        return getBlockState().getBlock() instanceof EnergyPipeBlock pipeBlock ? pipeBlock.getTier().getMaxTransfer() : 0;
     }
 
     /**
@@ -291,10 +292,10 @@ public class EnergyPipeBlockEntity extends BlockEntity {
 
     private void setPowered(Level level, BlockPos pos, boolean powered) {
         BlockState state = level.getBlockState(pos);
-        if (!(state.getBlock() instanceof AbstractPipeBlock) || state.getValue(AbstractPipeBlock.POWERED) == powered) {
+        if (!(state.getBlock() instanceof EnergyPipeBlock) || state.getValue(EnergyPipeBlock.POWERED) == powered) {
             return;
         }
-        level.setBlock(pos, state.setValue(AbstractPipeBlock.POWERED, powered), Block.UPDATE_CLIENTS);
+        level.setBlock(pos, state.setValue(EnergyPipeBlock.POWERED, powered), Block.UPDATE_CLIENTS);
     }
 
     /**
@@ -313,7 +314,7 @@ public class EnergyPipeBlockEntity extends BlockEntity {
         while (!queue.isEmpty() && visitedPipes.size() <= MAX_NETWORK_SEARCH) {
             BlockPos current = queue.poll();
             BlockState currentState = level.getBlockState(current);
-            if (!(currentState.getBlock() instanceof AbstractPipeBlock pipeBlock)) {
+            if (!(currentState.getBlock() instanceof EnergyPipeBlock pipeBlock)) {
                 continue;
             }
             int tierCap = pipeBlock.getTier().getMaxTransfer();

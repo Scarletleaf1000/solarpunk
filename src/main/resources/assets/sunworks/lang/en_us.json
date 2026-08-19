@@ -33,6 +33,8 @@
   "block.sunworks.energy_pipe_basic": "Basic Energy Pipe",
   "block.sunworks.energy_pipe_standard": "Standard Energy Pipe",
   "block.sunworks.energy_pipe_advanced": "Advanced Energy Pipe",
+  "block.sunworks.item_pipe_basic": "Basic Item Pipe",
+  "item.sunworks.extractor": "Extractor",
 
   "block.menu.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
   "block.menu.sunworks.solar_panel": "Solar Panel",
@@ -47,6 +49,8 @@
   "tooltip.sunworks.solar_panel.power_generation": "Maximum Power Generation: 30 FE/t",
   "tooltip.sunworks.solar_panel.energy_storage": "Energy Storage: 16000 FE",
   "tooltip.sunworks.solar_alloy_smelter.description": "Uses solar power to smelt raw materials into alloys.",
+  "tooltip.sunworks.item_pipe.description": "Moves items between connected inventories. Attach an extractor to pull items into the network.",
+  "tooltip.sunworks.extractor.description": "Right-click an item pipe face connected to an inventory to attach. Pulls up to 4 items at a time. Stops while the pipe is powered by redstone.",
 
   "gui.sunworks.configuration_tab": "Side Configuration",
 
