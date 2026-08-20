@@ -35,7 +35,6 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.SILICON);
                         output.accept(ModItems.HEAT_CORE);
                         output.accept(ModItems.SOLAR_PANEL_COMPONENT);
-                        output.accept(ModItems.EXTRACTOR);
 
                     }).build());
 
@@ -67,7 +66,6 @@ public class ModCreativeModeTabs {
                        output.accept(ModBlocks.SOLAR_PANEL);
 
                        ModBlocks.ENERGY_PIPES.values().forEach(output::accept);
-                       output.accept(ModBlocks.ITEM_PIPE_BASIC);
                     }).build());
 
     public static void register(IEventBus eventBus) {

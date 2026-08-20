@@ -4,7 +4,6 @@ import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
 import me.scarletleaf1000.sunworks.block.custom.cable.CableTier;
 import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeBlock;
-import me.scarletleaf1000.sunworks.block.custom.logistics.ItemPipeBlock;
 import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
@@ -100,16 +99,7 @@ public class ModBlocks {
 
     public static final Map<CableTier, DeferredBlock<EnergyPipeBlock>> ENERGY_PIPES = new EnumMap<>(CableTier.class);
 
-    public static final DeferredBlock<ItemPipeBlock> ITEM_PIPE_BASIC = BLOCKS.register("item_pipe_basic",
-            () -> new ItemPipeBlock(BlockBehaviour.Properties.of()
-                    .strength(1.5f)
-                    .sound(SoundType.METAL)
-                    .noOcclusion()));
-
     static {
-        ModItems.ITEMS.register("item_pipe_basic", () -> new DescriptiveBlockItem(ITEM_PIPE_BASIC.get(), new Item.Properties(),
-                Component.translatable("tooltip.sunworks.item_pipe.description")));
-
         for (CableTier tier : CableTier.values()) {
             registerPipeTier(tier);
         }
