@@ -86,9 +86,9 @@ public class ModRecipeProvider extends RecipeProvider {
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SOLAR_PANEL_COMPONENT.get(), 3)
                 .pattern("SSS")
-                .pattern("IHI")
+                .pattern("#H#")
                 .define('S', ModItems.SILVER_INGOT.get())
-                .define('I', Items.IRON_INGOT)
+                .define('#', ModItems.SILICON.get())
                 .define('H', ModItems.HEAT_CORE.get())
                 .unlockedBy("has_heat_core", has(ModItems.HEAT_CORE.get()))
                 .save(recipeOutput);
