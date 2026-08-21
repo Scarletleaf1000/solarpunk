@@ -51,7 +51,7 @@ public class ConfigurationPanelWidget {
     private static final int TEXTURE_HEIGHT = 256;
 
     public static final int CONTENT_WIDTH = 140;
-    public static final int CONTENT_HEIGHT = 68;
+    public static final int CONTENT_HEIGHT = 64;
 
     private static final int BUTTON_SIZE = 16;
     private static final int GAP = 3;
