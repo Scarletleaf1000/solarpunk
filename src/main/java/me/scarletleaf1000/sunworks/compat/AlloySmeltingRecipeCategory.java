@@ -23,7 +23,7 @@ import java.util.List;
 public class AlloySmeltingRecipeCategory implements IRecipeCategory {
     public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(Sunworks.MOD_ID, "alloy_smelting");
     public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
-            Sunworks.MOD_ID, "textures/gui/container/solar_alloy_smelter.png");
+            Sunworks.MOD_ID, "textures/compat/jei/alloy_smelting.png");
 
     public static final RecipeType<AlloySmelterRecipe> ALLOY_SMELTING_RECIPE_TYPE =
         new RecipeType<>(UID, AlloySmelterRecipe.class);
