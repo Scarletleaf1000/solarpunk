@@ -28,13 +28,14 @@ import java.util.Map;
  * its 6 face buttons out in an unfolded-cube cross pattern:
  * <pre>
  *  . U .
- *  L B R
- *  . D F
+ *  L F R
+ *  . D B
  * </pre>
  * where U/D/L/R/B/F are up/down/left/right/back/front respectively. Buttons are plain vanilla
- * {@link Button}s (so the screen can add them via {@code addRenderableWidget} normally); this
- * class only owns the background texture and the {@link IOType} icon overlays drawn on top of
- * them, which must be rendered after the buttons (see {@link #renderIcons}).
+ * {@link Button}s. They are added as children (not renderables) so the screen can draw the
+ * panel background over the inventory slots/items first, then render the buttons on top of it
+ * (see {@link #renderButtons}). This class owns the background texture and the {@link IOType}
+ * icon overlays drawn on top of the buttons (see {@link #renderIcons}).
  *
  * <p>The background texture is a standard 256x256 GUI sheet, but the actual visible popup
  * content only occupies the top-left {@link #CONTENT_WIDTH}x{@link #CONTENT_HEIGHT} corner of
@@ -71,10 +72,10 @@ public class ConfigurationPanelWidget {
     static {
         LAYOUT.put(RelativeSide.UP, new int[]{1, 0});
         LAYOUT.put(RelativeSide.LEFT, new int[]{0, 1});
-        LAYOUT.put(RelativeSide.BACK, new int[]{1, 1});
+        LAYOUT.put(RelativeSide.FRONT, new int[]{1, 1});
         LAYOUT.put(RelativeSide.RIGHT, new int[]{2, 1});
         LAYOUT.put(RelativeSide.DOWN, new int[]{1, 2});
-        LAYOUT.put(RelativeSide.FRONT, new int[]{2, 2});
+        LAYOUT.put(RelativeSide.BACK, new int[]{2, 2});
     }
 
     private int x;
@@ -150,7 +151,8 @@ public class ConfigurationPanelWidget {
 
     /**
      * @return the 6 face buttons plus the eject toggle (if the machine supports it) - add each
-     * of these via {@code Screen#addRenderableWidget}.
+     * of these via {@code Screen#addWidget} so they receive input without being drawn until the
+     * panel background has been rendered.
      */
     public Collection<Button> getButtons() {
         if (ejectButton == null) {
@@ -195,16 +197,34 @@ public class ConfigurationPanelWidget {
     public void renderBackground(GuiGraphics guiGraphics) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
         guiGraphics.blit(BACKGROUND, x, y, 0, 0, CONTENT_WIDTH, CONTENT_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.pose().popPose();
+    }
+
+    /**
+     * Renders every panel button on top of the background - call this from the screen's
+     * {@code render()} method after {@link #renderBackground}.
+     */
+    public void renderButtons(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
+        for (Button button : getButtons()) {
+            button.render(guiGraphics, mouseX, mouseY, partialTick);
+        }
+        guiGraphics.pose().popPose();
     }
 
     /**
      * Draws the small {@link IOType} icon over each button - call this after the buttons
-     * themselves have rendered (i.e. after {@code super.render()} in the screen).
+     * themselves have rendered.
      */
     public void renderIcons(GuiGraphics guiGraphics) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0, 0, 200);
 
         for (Map.Entry<RelativeSide, Button> entry : buttons.entrySet()) {
             Button button = entry.getValue();
@@ -215,5 +235,7 @@ public class ConfigurationPanelWidget {
 
             guiGraphics.blit(ICONS, iconX, iconY, iconU, 0, ICON_SIZE, ICON_SIZE, ICON_SHEET_WIDTH, ICON_SIZE);
         }
+
+        guiGraphics.pose().popPose();
     }
 }
