@@ -56,6 +56,7 @@ public class ModBlockTagProvider extends BlockTagsProvider {
                 .add(ModBlocks.RAW_SILVER_BLOCK.get())
                 .add(ModBlocks.ELECTRUM_BLOCK.get())
                 .add(ModBlocks.SOLAR_ALLOY_SMELTER.get())
+                .add(ModBlocks.ALLOY_SMELTER.get())
         ;
 
         this.tag(BlockTags.NEEDS_IRON_TOOL)

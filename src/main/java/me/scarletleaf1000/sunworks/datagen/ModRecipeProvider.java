@@ -122,6 +122,17 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('e', ModItems.ELECTRUM_INGOT.get())
                 .unlockedBy("has_solar_panel_component", has(ModItems.SOLAR_PANEL_COMPONENT.get()))
                 .save(recipeOutput);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModBlocks.ALLOY_SMELTER.get())
+                .pattern("IBI")
+                .pattern("IFI")
+                .pattern("CCC")
+                .define('I', Items.IRON_INGOT)
+                .define('B', Items.BLAST_FURNACE)
+                .define('F', Items.FURNACE)
+                .define('C', Items.COBBLESTONE)
+                .unlockedBy("has_blast_furnace", has(Items.BLAST_FURNACE))
+                .save(recipeOutput);
     }
 
     protected static void oreSmeltingRecipes(RecipeOutput output, List<ItemLike> inputs, ItemLike result) {

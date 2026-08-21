@@ -51,7 +51,7 @@ public class ConfigurationPanelWidget {
     private static final int TEXTURE_HEIGHT = 256;
 
     public static final int CONTENT_WIDTH = 140;
-    public static final int CONTENT_HEIGHT = 64;
+    public static final int CONTENT_HEIGHT = 70;
 
     private static final int BUTTON_SIZE = 16;
     private static final int GAP = 3;
@@ -204,7 +204,7 @@ public class ConfigurationPanelWidget {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0, 0, 300);
-        guiGraphics.fill(x, y, x + CONTENT_WIDTH, y + CONTENT_HEIGHT, 0xFFD0D0D0);
+        guiGraphics.fill(x, y, x + CONTENT_WIDTH, y + CONTENT_HEIGHT - 6, 0xFFD0D0D0);
         guiGraphics.blit(BACKGROUND, x, y, 0, 0, CONTENT_WIDTH, CONTENT_HEIGHT, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         guiGraphics.pose().popPose();
     }

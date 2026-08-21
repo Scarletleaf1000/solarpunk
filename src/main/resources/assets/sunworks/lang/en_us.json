@@ -28,6 +28,7 @@
   "block.sunworks.silver_block": "Block of Silver",
   "block.sunworks.electrum_block": "Block of Electrum",
   "block.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+  "block.sunworks.alloy_smelter": "Alloy Smelter",
   "block.sunworks.solar_panel": "Solar Panel",
 
   "block.sunworks.energy_pipe_basic": "Basic Energy Pipe",
@@ -35,6 +36,7 @@
   "block.sunworks.energy_pipe_advanced": "Advanced Energy Pipe",
 
   "block.menu.sunworks.solar_alloy_smelter": "Simple Solar Alloy Smelter",
+  "block.menu.sunworks.alloy_smelter": "Alloy Smelter",
   "block.menu.sunworks.solar_panel": "Solar Panel",
 
   "recipe.sunworks.alloy_smelting": "Alloy Smelting",
@@ -47,6 +49,7 @@
   "tooltip.sunworks.solar_panel.power_generation": "Maximum Power Generation: 30 FE/t",
   "tooltip.sunworks.solar_panel.energy_storage": "Energy Storage: 16000 FE",
   "tooltip.sunworks.solar_alloy_smelter.description": "Uses solar power to smelt raw materials into alloys.",
+  "tooltip.sunworks.alloy_smelter.description": "Smelts raw materials into alloys.",
 
   "gui.sunworks.configuration_tab": "Side Configuration",
 

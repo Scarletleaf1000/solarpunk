@@ -7,6 +7,7 @@ import me.scarletleaf1000.sunworks.item.ModCreativeModeTabs;
 import me.scarletleaf1000.sunworks.item.ModItems;
 import me.scarletleaf1000.sunworks.recipe.ModRecipes;
 import me.scarletleaf1000.sunworks.screen.ModMenuTypes;
+import me.scarletleaf1000.sunworks.screen.custom.AlloySmelterScreen;
 import me.scarletleaf1000.sunworks.screen.custom.SolarAlloySmelterScreen;
 import me.scarletleaf1000.sunworks.screen.custom.SolarPanelScreen;
 import net.minecraft.client.Minecraft;
@@ -94,6 +95,7 @@ public class Sunworks {
 
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent e) {
+            e.register(ModMenuTypes.ALLOY_SMELTER_MENU.get(), AlloySmelterScreen::new);
             e.register(ModMenuTypes.SOLAR_ALLOY_SMELTER_MENU.get(), SolarAlloySmelterScreen::new);
             e.register(ModMenuTypes.SOLAR_PANEL_MENU.get(), SolarPanelScreen::new);
         }

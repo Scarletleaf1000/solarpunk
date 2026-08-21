@@ -4,6 +4,7 @@ import me.scarletleaf1000.sunworks.Sunworks;
 import me.scarletleaf1000.sunworks.block.custom.BuddingHelioliteBlock;
 import me.scarletleaf1000.sunworks.block.custom.cable.CableTier;
 import me.scarletleaf1000.sunworks.block.custom.cable.EnergyPipeBlock;
+import me.scarletleaf1000.sunworks.block.custom.processor.AlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.processor.SolarAlloySmelterBlock;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.item.ModItems;
@@ -87,6 +88,13 @@ public class ModBlocks {
                     .requiresCorrectToolForDrops()),
             block -> new DescriptiveBlockItem(block, new Item.Properties(),
                     Component.translatable("tooltip.sunworks.solar_alloy_smelter.description")));
+    public static final DeferredBlock<Block> ALLOY_SMELTER = registerBlock("alloy_smelter",
+            () -> new AlloySmelterBlock(BlockBehaviour.Properties.of()
+                    .strength(5f, 6f)
+                    .sound(SoundType.METAL)
+                    .requiresCorrectToolForDrops()),
+            block -> new DescriptiveBlockItem(block, new Item.Properties(),
+                    Component.translatable("tooltip.sunworks.alloy_smelter.description")));
     public static final DeferredBlock<Block> SOLAR_PANEL = registerBlock("solar_panel",
             () -> new SolarPanelBlock(BlockBehaviour.Properties.of()
                     .strength(5f, 6f)

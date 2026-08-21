@@ -44,6 +44,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         blockWithItem(ModBlocks.ELECTRUM_BLOCK);
 
         horizontalFaceBlock(ModBlocks.SOLAR_ALLOY_SMELTER, true, true);
+        horizontalFaceBlock(ModBlocks.ALLOY_SMELTER, true, false);
 
         simpleBlock(ModBlocks.SOLAR_PANEL.get(), models().getExistingFile(modLoc("block/solar_panel")));
 

@@ -5,6 +5,7 @@ import me.scarletleaf1000.sunworks.block.ModBlocks;
 import me.scarletleaf1000.sunworks.block.custom.generator.SolarPanelBlock;
 import me.scarletleaf1000.sunworks.block.entity.custom.cable.EnergyPipeBlockEntity;
 import me.scarletleaf1000.sunworks.block.entity.custom.generator.SolarPanelBlockEntity;
+import me.scarletleaf1000.sunworks.block.entity.custom.processor.AlloySmelterBlockEntity;
 import me.scarletleaf1000.sunworks.block.entity.custom.processor.SolarAlloySmelterBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,9 @@ public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Sunworks.MOD_ID);
 
+    public static final Supplier<BlockEntityType<AlloySmelterBlockEntity>> ALLOY_SMELTER_BE =
+            BLOCK_ENTITIES.register("alloy_smelter_be", () -> BlockEntityType.Builder.of(
+                    AlloySmelterBlockEntity::new, ModBlocks.ALLOY_SMELTER.get()).build(null));
     public static final Supplier<BlockEntityType<SolarAlloySmelterBlockEntity>> SOLAR_ALLOY_SMELTER_BE =
             BLOCK_ENTITIES.register("solar_alloy_smelter_be", () -> BlockEntityType.Builder.of(
                     SolarAlloySmelterBlockEntity::new, ModBlocks.SOLAR_ALLOY_SMELTER.get()).build(null));

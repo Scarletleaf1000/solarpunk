@@ -63,6 +63,7 @@ public class ModCreativeModeTabs {
                        output.accept(ModBlocks.ELECTRUM_BLOCK);
 
                        output.accept(ModBlocks.SOLAR_ALLOY_SMELTER);
+                       output.accept(ModBlocks.ALLOY_SMELTER);
                        output.accept(ModBlocks.SOLAR_PANEL);
 
                        ModBlocks.ENERGY_PIPES.values().forEach(output::accept);
