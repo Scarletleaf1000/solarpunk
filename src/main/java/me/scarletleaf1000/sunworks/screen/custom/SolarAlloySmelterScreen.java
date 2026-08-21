@@ -40,19 +40,40 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
 
         addRenderableWidget(configTab);
         for (var button : configPanel.getButtons()) {
-            addRenderableWidget(button);
+            addWidget(button);
         }
         configPanel.setVisible(false);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (configTab.isExpanded() && !configPanel.isInsideContent(mouseX, mouseY)
-                && !configTab.isMouseOver(mouseX, mouseY)) {
+        if (configTab.isExpanded()) {
+            if (configTab.isMouseOver(mouseX, mouseY)) {
+                return configTab.mouseClicked(mouseX, mouseY, button);
+            }
+            if (configPanel.isInsideContent(mouseX, mouseY)) {
+                for (var panelButton : configPanel.getButtons()) {
+                    if (panelButton.isMouseOver(mouseX, mouseY)
+                            && panelButton.mouseClicked(mouseX, mouseY, button)) {
+                        setDragging(true);
+                        setFocused(panelButton);
+                        return true;
+                    }
+                }
+                return true;
+            }
             configTab.setExpanded(false);
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (configTab.isExpanded() && configPanel.isInsideContent(mouseX, mouseY)) {
+            return;
+        }
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -75,10 +96,6 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
         guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
         renderProgressArrow(guiGraphics, x, y);
-
-        if (configTab.isExpanded()) {
-            configPanel.renderBackground(guiGraphics);
-        }
     }
 
     private void renderProgressArrow(GuiGraphics guiGraphics, int x, int y) {
@@ -96,6 +113,8 @@ public class SolarAlloySmelterScreen extends AbstractContainerScreen<SolarAlloyS
         }
         super.render(guiGraphics, mouseX, mouseY, delta);
         if (configTab.isExpanded()) {
+            configPanel.renderBackground(guiGraphics);
+            configPanel.renderButtons(guiGraphics, mouseX, mouseY, delta);
             configPanel.renderIcons(guiGraphics);
         }
         renderTooltip(guiGraphics, mouseX, mouseY);
